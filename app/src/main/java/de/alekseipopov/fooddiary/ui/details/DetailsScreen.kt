@@ -31,8 +31,7 @@ fun DetailsScreen(navController: NavHostController, recordId: String) {
             modifier = Modifier
                 .wrapContentHeight()
                 .wrapContentWidth()
-                .constrainAs(greetingText)
-                {
+                .constrainAs(greetingText) {
                     top.linkTo(parent.top)
                     bottom.linkTo(parent.bottom)
                     start.linkTo(parent.start)

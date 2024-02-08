@@ -31,8 +31,7 @@ fun OverviewScreen(navController: NavHostController) {
             modifier = Modifier
                 .wrapContentHeight()
                 .wrapContentWidth()
-                .constrainAs(greetingText)
-                {
+                .constrainAs(greetingText) {
                     top.linkTo(parent.top)
                     bottom.linkTo(parent.bottom)
                     start.linkTo(parent.start)
@@ -45,8 +44,7 @@ fun OverviewScreen(navController: NavHostController) {
             modifier = Modifier
                 .wrapContentHeight()
                 .wrapContentWidth()
-                .constrainAs(button)
-                {
+                .constrainAs(button) {
                     top.linkTo(greetingText.bottom, 8.dp)
                     start.linkTo(greetingText.start)
                     end.linkTo(greetingText.end)
