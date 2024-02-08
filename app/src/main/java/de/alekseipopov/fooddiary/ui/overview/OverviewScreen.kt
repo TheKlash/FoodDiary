@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -25,6 +26,9 @@ fun OverviewScreen(navController: NavHostController) {
     ) {
 
         val viewModel: OverviewViewModel = koinViewModel()
+        viewModel.getRecords()
+        val recordsList = viewModel.recordsListLiveData.observeAsState()
+
         val (greetingText, button) = createRefs()
 
         Text(
