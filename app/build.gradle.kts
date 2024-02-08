@@ -66,4 +66,22 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    //Koin
+    runtimeOnly("io.insert-koin:koin-core:3.5.3")
+    implementation("io.insert-koin:koin-core-coroutines:3.5.3")
+    implementation("io.insert-koin:koin-android:3.5.3")
+    implementation("io.insert-koin:koin-android-test:3.5.3")
+    implementation("io.insert-koin:koin-androidx-workmanager:3.5.3")
+    runtimeOnly("io.insert-koin:koin-compose:1.1.2")
+    runtimeOnly("io.insert-koin:koin-androidx-compose:3.5.3")
+    implementation("io.insert-koin:koin-androidx-compose-navigation:3.5.3")
+
+    //Navigation component
+    implementation("androidx.navigation:navigation-compose:2.7.7")
+
+    //Compose
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
+
+
 }
