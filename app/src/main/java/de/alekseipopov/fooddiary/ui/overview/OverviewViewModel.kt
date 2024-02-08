@@ -1,10 +1,10 @@
 package de.alekseipopov.fooddiary.ui.overview
 
 import androidx.lifecycle.ViewModel
-import de.alekseipopov.fooddiary.domain.RecordRepository
+import de.alekseipopov.fooddiary.domain.DayRecordRepository
 
 class OverviewViewModel(
-    val repository: RecordRepository
+    val repository: DayRecordRepository
 ): ViewModel() {
 
 }
