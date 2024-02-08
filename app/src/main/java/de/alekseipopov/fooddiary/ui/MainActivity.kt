@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -17,6 +18,7 @@ import de.alekseipopov.fooddiary.ui.overview.OverviewScreen
 import de.alekseipopov.fooddiary.ui.theme.FoodDiaryTheme
 
 class MainActivity : ComponentActivity() {
+    @ExperimentalMaterial3Api
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -34,6 +36,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@ExperimentalMaterial3Api
 @Composable
 fun Navigation(navController: NavHostController) {
     NavHost(navController = navController, startDestination = "overview") {
