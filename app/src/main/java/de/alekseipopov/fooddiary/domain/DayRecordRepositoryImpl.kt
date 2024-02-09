@@ -1,7 +1,6 @@
 package de.alekseipopov.fooddiary.domain
 
 import de.alekseipopov.fooddiary.data.model.DayRecord
-import de.alekseipopov.fooddiary.data.model.Eating
 import de.alekseipopov.fooddiary.util.testRecordList
 
 class DayRecordRepositoryImpl: DayRecordRepository {
@@ -20,5 +19,9 @@ class DayRecordRepositoryImpl: DayRecordRepository {
     override fun writeRecord(record: DayRecord): List<DayRecord> {
         _dayRecords.add(record)
         return dayRecords
+    }
+
+    override fun getRecord(recordId: String): DayRecord? {
+        return dayRecords.find { it.id == recordId }
     }
 }
