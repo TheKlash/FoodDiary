@@ -49,6 +49,8 @@ import de.alekseipopov.fooddiary.ui.overview.OverviewScreenContent
 import de.alekseipopov.fooddiary.ui.theme.FoodDiaryTheme
 import de.alekseipopov.fooddiary.util.testMeal
 import de.alekseipopov.fooddiary.util.testRecord
+import de.alekseipopov.fooddiary.util.unixTimeToDate
+import de.alekseipopov.fooddiary.util.unixTimeToTime
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -104,7 +106,7 @@ fun DetailsScreenContent(
     ) {
         Text(
             fontSize = 24.sp,
-            text = dayRecord?.date ?: ""
+            text = dayRecord?.date?.unixTimeToDate() ?: ""
         )
         Spacer(
             modifier = Modifier
@@ -169,7 +171,7 @@ fun MealListItem(
                         .wrapContentHeight(),
                     textAlign = TextAlign.Center,
                     fontSize = 20.sp,
-                    text = meal.time ?: ""
+                    text = meal.time.unixTimeToTime() ?: ""
                 )
             }
             Column(

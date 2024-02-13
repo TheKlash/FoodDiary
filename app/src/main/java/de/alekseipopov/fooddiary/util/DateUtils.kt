@@ -7,12 +7,12 @@ import java.util.Locale
 const val DEFAULT_FORMAT_DATE = "EEEE, MMMM dd yyyy"
 const val DEFAULT_FORMAT_TIME = "HH:mm"
 
-fun unixTimeToDate(timestamp: Long): String {
+fun Long.unixTimeToDate(): String {
     val formatter = SimpleDateFormat(DEFAULT_FORMAT_DATE, Locale.getDefault())
-    return formatter.format(Date(timestamp * 1000))
+    return formatter.format(Date(this * 1000))
 }
 
-fun unixTimeToTime(timestamp: Long): String {
+fun Long.unixTimeToTime(): String {
     val formatter = SimpleDateFormat(DEFAULT_FORMAT_TIME, Locale.getDefault())
-    return formatter.format(Date(timestamp * 1000))
+    return formatter.format(Date(this * 1000))
 }

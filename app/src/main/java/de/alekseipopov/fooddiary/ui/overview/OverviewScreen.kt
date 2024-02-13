@@ -38,6 +38,7 @@ import de.alekseipopov.fooddiary.data.model.DayRecord
 import de.alekseipopov.fooddiary.ui.theme.FoodDiaryTheme
 import de.alekseipopov.fooddiary.util.testRecord
 import de.alekseipopov.fooddiary.util.testRecordList
+import de.alekseipopov.fooddiary.util.unixTimeToDate
 import org.koin.androidx.compose.koinViewModel
 
 @ExperimentalMaterial3Api
@@ -139,7 +140,7 @@ fun DayRecordListItem(
                 )
         ) {
             Text(
-                text = "${dayRecord.date}",
+                text = "${dayRecord.date.unixTimeToDate()}",
                 fontSize = 24.sp
             )
         }
