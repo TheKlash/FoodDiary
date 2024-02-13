@@ -21,6 +21,7 @@ import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -34,6 +35,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import de.alekseipopov.fooddiary.data.model.DayRecord
+import de.alekseipopov.fooddiary.ui.theme.FoodDiaryTheme
 import de.alekseipopov.fooddiary.util.testRecord
 import de.alekseipopov.fooddiary.util.testRecordList
 import org.koin.androidx.compose.koinViewModel
@@ -157,9 +159,13 @@ fun DayRecordListItemPreview() {
 @Composable
 @Preview
 fun OverviewScreenPreview() {
-    OverviewScreenContent(
-        recordsList = testRecordList,
-        navController = rememberNavController()
-    )
+    FoodDiaryTheme {
+        Surface {
+            OverviewScreenContent(
+                recordsList = testRecordList,
+                navController = rememberNavController()
+            )
+        }
+    }
 }
 

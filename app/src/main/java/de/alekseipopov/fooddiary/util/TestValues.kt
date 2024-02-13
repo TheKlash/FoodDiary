@@ -95,5 +95,5 @@ val testMeal = Meal(
     id = 1,
     time = "11:00",
     title = "Lunch",
-    courses = listOf("Burger", "Fries", "Coke"),
+    courses = listOf("Burger", "Fries", "Coke", "Суп из тысячи залуп"),
 )
