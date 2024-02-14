@@ -15,11 +15,11 @@ import kotlinx.coroutines.launch
 
 class DetailsViewModel(
     val repository: DayRecordRepository
-): ViewModel() {
+) : ViewModel() {
 
     val record: StateFlow<DayRecord?>
         get() = _record
-    private val _record =  MutableStateFlow<DayRecord?>(null)
+    private val _record = MutableStateFlow<DayRecord?>(null)
 
     fun getRecord(id: String?) {
         id?.let {

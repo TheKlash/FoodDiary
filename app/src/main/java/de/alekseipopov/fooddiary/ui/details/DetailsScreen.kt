@@ -73,16 +73,16 @@ fun DetailsScreen(navController: NavHostController, recordId: String) {
                     titleContentColor = MaterialTheme.colorScheme.primary,
                 ),
                 navigationIcon = {
-                   IconButton(
-                       onClick = { navController.popBackStack() }
-                   ) {
-                       Image(
-                           imageVector = Icons.Filled.ArrowBack,
-                           colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
-                           contentDescription = null
-                       )
-                   }
-                } ,
+                    IconButton(
+                        onClick = { navController.popBackStack() }
+                    ) {
+                        Image(
+                            imageVector = Icons.Filled.ArrowBack,
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
+                            contentDescription = null
+                        )
+                    }
+                },
                 title = { Text(text = "Day review") }
             )
         },

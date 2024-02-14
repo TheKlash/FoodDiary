@@ -66,15 +66,17 @@ fun OverviewScreen(navController: NavHostController) {
         floatingActionButtonPosition = FabPosition.End,
         floatingActionButton = {
             ExtendedFloatingActionButton(
-                icon = { Icon(Icons.Filled.Add,"") },
+                icon = { Icon(Icons.Filled.Add, "") },
                 text = { Text("Add") },
                 onClick = { /*do something*/ },
                 elevation = FloatingActionButtonDefaults.elevation(8.dp)
             )
         },
-        content = { paddingValues ->  OverviewScreenContent(
-            paddingValues, recordsList.value, navController
-        ) }
+        content = { paddingValues ->
+            OverviewScreenContent(
+                paddingValues, recordsList.value, navController
+            )
+        }
     )
 }
 
@@ -116,7 +118,7 @@ fun OverviewScreenContent(
                             dayRecord = it,
                             navigate = { id -> navController.navigate("details/$id") }
                         )
-                })
+                    })
             }
         }
     }
@@ -155,7 +157,7 @@ fun DayRecordListItem(
 fun DayRecordListItemPreview() {
     DayRecordListItem(
         testRecord,
-        navigate = {  }
+        navigate = { }
     )
 }
 

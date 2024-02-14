@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 
 class OverviewViewModel(
     private val repository: DayRecordRepository
-): ViewModel() {
+) : ViewModel() {
 
     val recordsList: StateFlow<List<DayRecord>?>
         get() = _recordsList.asStateFlow()

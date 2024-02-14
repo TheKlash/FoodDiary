@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import java.lang.Exception
 
-class DayRecordRepositoryImpl: DayRecordRepository {
+class DayRecordRepositoryImpl : DayRecordRepository {
 
     private val dayRecords: List<DayRecord>
         get() = _dayRecords
@@ -18,6 +18,7 @@ class DayRecordRepositoryImpl: DayRecordRepository {
     init {
         _dayRecords = testRecordList
     }
+
     override suspend fun getRecordsList(): Flow<List<DayRecord>?> = flow {
         emit(dayRecords)
     }.flowOn(Dispatchers.IO)

@@ -60,7 +60,7 @@ val testRecordList = mutableListOf(
     )
 )
 
-val testRecord =     DayRecord(
+val testRecord = DayRecord(
     id = "1",
     date = 1704153600L,
     meals = listOf(
