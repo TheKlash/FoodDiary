@@ -15,7 +15,7 @@ class OverviewViewModel(
     private val _recordsListLiveData = MutableLiveData<List<DayRecord>?>(null)
 
     fun getRecords() {
-        _recordsListLiveData.value = repository.getRecords()
+        _recordsListLiveData.value = repository.getRecordsList()
     }
 
 

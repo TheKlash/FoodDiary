@@ -1,7 +1,11 @@
 package de.alekseipopov.fooddiary.domain
 
 import de.alekseipopov.fooddiary.data.model.DayRecord
+import de.alekseipopov.fooddiary.data.model.Meal
 import de.alekseipopov.fooddiary.util.testRecordList
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import java.lang.Exception
 
 class DayRecordRepositoryImpl: DayRecordRepository {
 
@@ -12,16 +16,16 @@ class DayRecordRepositoryImpl: DayRecordRepository {
     init {
         _dayRecords = testRecordList
     }
-    override fun getRecords(): List<DayRecord> {
-        return dayRecords
+    override fun getRecordsList(): Flow<List<DayRecord>> = flow {
+        emit(dayRecords)
     }
 
-    override fun writeRecord(record: DayRecord): List<DayRecord> {
+    override fun writeRecord(record: DayRecord): Boolean {
         _dayRecords.add(record)
-        return dayRecords
+        return true
     }
 
-    override fun getRecord(recordId: String): DayRecord? {
-        return dayRecords.find { it.id == recordId }
+    override fun getRecord(recordId: String): Flow<DayRecord?> = flow {
+        emit(dayRecords.find { it.id == recordId })
     }
 }
