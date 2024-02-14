@@ -26,6 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
@@ -47,9 +48,10 @@ import org.koin.androidx.compose.koinViewModel
 fun OverviewScreen(navController: NavHostController) {
 
     val viewModel: OverviewViewModel = koinViewModel()
-    viewModel.getRecords()
-
     val recordsList = viewModel.recordsList.collectAsState()
+    LaunchedEffect(key1 = recordsList) {
+        viewModel.getRecords()
+    }
 
     Scaffold(
         topBar = {
