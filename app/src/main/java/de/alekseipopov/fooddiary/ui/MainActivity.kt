@@ -15,6 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import de.alekseipopov.fooddiary.ui.details.DetailsScreen
 import de.alekseipopov.fooddiary.ui.overview.OverviewScreen
+import de.alekseipopov.fooddiary.ui.report.ReportScreen
 import de.alekseipopov.fooddiary.ui.theme.FoodDiaryTheme
 
 class MainActivity : ComponentActivity() {
@@ -46,6 +47,11 @@ fun Navigation(navController: NavHostController) {
         composable(route = "details/{recordId}") {
             val recordId = it.arguments?.getString("recordId") ?: ""
             DetailsScreen(navController = navController, recordId = recordId)
+        }
+        composable(route = "report/{startDate}/{endDate}") {
+            val startDate = it.arguments?.getLong("startDate") ?: 0L
+            val endDate = it.arguments?.getLong("endDate") ?: 0L
+            ReportScreen(navController = navController, startDate = startDate, endDate = endDate)
         }
     }
 }
