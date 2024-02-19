@@ -31,4 +31,10 @@ class DayRecordRepositoryImpl : DayRecordRepository {
     override suspend fun getRecord(recordId: String): Flow<DayRecord?> = flow {
         emit(dayRecords.find { it.id == recordId })
     }.flowOn(Dispatchers.IO)
+
+    override suspend fun getRecordsPeriod(startDate: Long, endDate: Long): Flow<List<DayRecord>?> = flow {
+        emit(
+            dayRecords.filter { it.date in startDate..endDate }
+        )
+    }.flowOn(Dispatchers.IO)
 }

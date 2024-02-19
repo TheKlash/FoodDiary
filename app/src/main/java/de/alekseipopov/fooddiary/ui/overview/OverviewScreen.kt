@@ -1,5 +1,6 @@
 package de.alekseipopov.fooddiary.ui.overview
 
+import android.app.DatePickerDialog
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -150,6 +151,11 @@ fun DayRecordListItem(
             )
         }
     }
+}
+
+@Composable
+fun ReportDatePickerDialog() {
+
 }
 
 @Composable
