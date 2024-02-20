@@ -279,16 +279,13 @@ fun ReportDatePickerDialogContent(
                 DatePicker(
                     state = startDatePickerState,
                     dateValidator = { date ->
-                        if (endDatePickerState.selectedDateMillis != null)
-                            date < endDatePickerState.selectedDateMillis!!
-                        else {
-                            val today = Date().time
-                            date < today
-                        }
                         date < (endDatePickerState.selectedDateMillis ?: Date().time)
                     }
                 )
-                Button(onClick = { showStartDatePickerDialog = false }) {
+                Button(
+                    modifier = Modifier.align(Alignment.End),
+                    onClick = { showStartDatePickerDialog = false }
+                ) {
                     Text(text = "OK")
                 }
             }
@@ -300,7 +297,10 @@ fun ReportDatePickerDialogContent(
                             ?: 0L) && date <= Date().time
                     }
                 )
-                Button(onClick = { showEndDatePickerDialog = false }) {
+                Button(
+                    modifier = Modifier.align(Alignment.End),
+                    onClick = { showEndDatePickerDialog = false },
+                ) {
                     Text(text = "OK")
                 }
             }
