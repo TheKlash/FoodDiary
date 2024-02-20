@@ -2,20 +2,14 @@ package de.alekseipopov.fooddiary.ui.details
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Card
@@ -34,6 +28,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -42,7 +38,6 @@ import androidx.navigation.NavHostController
 import de.alekseipopov.fooddiary.data.model.DayRecord
 import de.alekseipopov.fooddiary.data.model.Meal
 import de.alekseipopov.fooddiary.ui.theme.FoodDiaryTheme
-import de.alekseipopov.fooddiary.util.testMeal
 import de.alekseipopov.fooddiary.util.testRecord
 import de.alekseipopov.fooddiary.util.unixTimeToDate
 import de.alekseipopov.fooddiary.util.unixTimeToTime
@@ -80,15 +75,19 @@ fun DetailsScreen(navController: NavHostController, recordId: String) {
             )
         },
         content = { paddingValues ->
-            record.value?.let {
-                Box(
+            record.value?.let { dayRecord ->
+                LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
-                        .offset(y = paddingValues.calculateTopPadding())
+                        .padding(top = paddingValues.calculateTopPadding())
                         .padding(8.dp)
+                        .nestedScroll(rememberNestedScrollInteropConnection())
                 ) {
-                    DayDetailsItem(it)
+                    items(1) {
+                        DayDetailsItem(dayRecord)
+                        Spacer(modifier = Modifier.height(12.dp))
+                    }
                 }
             }
         }
@@ -111,27 +110,19 @@ fun DayDetailsItem(
         Text(
             text = "${dayRecord?.meals?.size} meals"
         )
-        Spacer(
-            modifier = Modifier
-                .height(8.dp)
-        )
-        dayRecord?.meals?.let { mealsList ->
-            Column(
+        dayRecord?.meals?.forEach {
+            Spacer(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight(),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                mealsList.forEach {
-                    MealList(meal = it)
-                }
-            }
+                    .height(8.dp)
+            )
+            MealListItem(meal = it)
         }
+
     }
 }
 
 @Composable
-fun MealList(
+fun MealListItem(
     meal: Meal
 ) {
     Card(

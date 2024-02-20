@@ -1,14 +1,20 @@
 package de.alekseipopov.fooddiary.ui.report
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -24,6 +30,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -70,14 +78,15 @@ fun ReportScreen(
                     }
                 },
                 title = { Text(text = title) }
-                )
+            )
         },
         content = { paddingValues ->
             report.value?.records?.let {
                 ReportScreenContent(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .offset(y = paddingValues.calculateTopPadding()),
+                        .padding(top = paddingValues.calculateTopPadding())
+                        .nestedScroll(rememberNestedScrollInteropConnection()),
                     records = it
                 )
             }
@@ -97,6 +106,7 @@ fun ReportScreenContent(modifier: Modifier = Modifier, records: List<DayRecord>)
                 DayDetailsItem(
                     dayRecord = it
                 )
+                Spacer(Modifier.height(24.dp))
             }
         )
     }

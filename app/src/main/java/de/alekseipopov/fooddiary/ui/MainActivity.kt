@@ -10,9 +10,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import de.alekseipopov.fooddiary.ui.details.DetailsScreen
 import de.alekseipopov.fooddiary.ui.overview.OverviewScreen
 import de.alekseipopov.fooddiary.ui.report.ReportScreen
@@ -48,7 +50,13 @@ fun Navigation(navController: NavHostController) {
             val recordId = it.arguments?.getString("recordId") ?: ""
             DetailsScreen(navController = navController, recordId = recordId)
         }
-        composable(route = "report/{startDate}/{endDate}") {
+        composable(
+            route = "report/{startDate}/{endDate}",
+            arguments = listOf(
+                navArgument("startDate") { type = NavType.LongType },
+                navArgument("endDate") { type = NavType.LongType }
+            )
+        ) {
             val startDate = it.arguments?.getLong("startDate") ?: 0L
             val endDate = it.arguments?.getLong("endDate") ?: 0L
             ReportScreen(navController = navController, startDate = startDate, endDate = endDate)
