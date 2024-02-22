@@ -73,16 +73,12 @@ fun OverviewScreen(navController: NavHostController) {
         floatingActionButtonPosition = FabPosition.End,
         floatingActionButton = {
             Column(
-                modifier = Modifier
-                    .width(120.dp)
-                    .wrapContentHeight(),
+                modifier = Modifier.width(120.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 horizontalAlignment = Alignment.End
             ) {
                 ExtendedFloatingActionButton(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight(),
+                    modifier = Modifier.fillMaxWidth(),
                     icon = { Icon(Icons.Outlined.DateRange, "") },
                     text = { Text("Report") },
                     containerColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -90,9 +86,7 @@ fun OverviewScreen(navController: NavHostController) {
                     elevation = FloatingActionButtonDefaults.elevation(8.dp)
                 )
                 ExtendedFloatingActionButton(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight(),
+                    modifier = Modifier.fillMaxWidth(),
                     icon = { Icon(Icons.Filled.Add, "") },
                     text = { Text("Add") },
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -146,9 +140,7 @@ fun OverviewScreenContent(
                     itemContent = {
                         DayRecordListItem(
                             dayRecord = it,
-                            navigate = {
-                                id -> onDayRecordSelected(id)
-                            }
+                            navigate = { id -> onDayRecordSelected(id) }
                         )
                     }
                 )
@@ -165,13 +157,11 @@ fun DayRecordListItem(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .wrapContentHeight()
             .clickable { navigate(dayRecord.id) },
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .wrapContentHeight()
                 .padding(
                     horizontal = 12.dp,
                     vertical = 8.dp
@@ -202,9 +192,7 @@ fun OverviewScreenContentPreview() {
     FoodDiaryTheme {
         Surface {
             OverviewScreenContent(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight(),
+                modifier = Modifier.fillMaxWidth(),
                 recordsList = testRecordList,
                 onDayRecordSelected = { }
             )

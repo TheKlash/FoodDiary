@@ -49,9 +49,7 @@ fun DetailsScreen(navController: NavHostController, recordId: String) {
 
     val viewModel: DetailsViewModel = koinViewModel()
     val record = viewModel.record.collectAsState()
-    LaunchedEffect(key1 = record) {
-        viewModel.getRecord(recordId)
-    }
+    LaunchedEffect(key1 = record) { viewModel.getRecord(recordId) }
 
     Scaffold(
         topBar = {
@@ -79,7 +77,6 @@ fun DetailsScreen(navController: NavHostController, recordId: String) {
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .wrapContentHeight()
                         .padding(top = paddingValues.calculateTopPadding())
                         .padding(8.dp)
                         .nestedScroll(rememberNestedScrollInteropConnection())
@@ -103,18 +100,10 @@ fun DayDetailsItem(
             fontSize = 24.sp,
             text = dayRecord?.date?.unixTimeToDate() ?: ""
         )
-        Spacer(
-            modifier = Modifier
-                .height(4.dp)
-        )
-        Text(
-            text = "${dayRecord?.meals?.size} meals"
-        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(text = "${dayRecord?.meals?.size} meals")
         dayRecord?.meals?.forEach {
-            Spacer(
-                modifier = Modifier
-                    .height(8.dp)
-            )
+            Spacer(modifier = Modifier.height(8.dp))
             MealListItem(meal = it)
         }
 
@@ -126,51 +115,38 @@ fun MealListItem(
     meal: Meal
 ) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight(),
+        modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .wrapContentHeight()
                 .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
+                modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight(),
+                    modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
                     fontSize = 20.sp,
                     text = meal.title,
                 )
                 Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight(),
+                    modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
                     fontSize = 20.sp,
                     text = meal.time.unixTimeToTime() ?: ""
                 )
             }
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(2f)
-                    .wrapContentHeight(),
+                modifier = Modifier.weight(2f),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 meal.courses.forEach {
                     Text(
-                        modifier = Modifier
-                            .fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center,
                         fontSize = 16.sp,
                         text = it
@@ -186,9 +162,7 @@ fun MealListItem(
 fun DayDetailsItemPreview() {
     FoodDiaryTheme {
         Surface {
-            DayDetailsItem(
-                dayRecord = testRecord
-            )
+            DayDetailsItem(dayRecord = testRecord)
         }
     }
 }

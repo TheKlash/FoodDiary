@@ -55,15 +55,11 @@ fun ReportDatePickerDialogContent(
     val context = LocalContext.current
 
     Card(
-        modifier = Modifier
-            .width(330.dp)
-            .wrapContentWidth()
-
+        modifier = Modifier.width(330.dp)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .wrapContentHeight()
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
@@ -72,13 +68,10 @@ fun ReportDatePickerDialogContent(
             Button(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
-                    showStartDatePickerDialog =
-                        !showStartDatePickerDialog && !showEndDatePickerDialog
+                    showStartDatePickerDialog = !showStartDatePickerDialog && !showEndDatePickerDialog
                 }
             ) {
                 Text(
-                    modifier = Modifier
-                        .wrapContentSize(),
                     textAlign = TextAlign.Center,
                     text = startDatePickerState.selectedDateMillis?.div(1000)?.unixTimeToDate()
                         ?: "Select start date"
@@ -88,15 +81,12 @@ fun ReportDatePickerDialogContent(
             Text(text = "To")
 
             Button(
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 onClick = {
                     showEndDatePickerDialog = !showEndDatePickerDialog && !showStartDatePickerDialog
                 }
             ) {
                 Text(
-                    modifier = Modifier
-                        .wrapContentSize(),
                     textAlign = TextAlign.Center,
                     text = endDatePickerState.selectedDateMillis?.div(1000)?.unixTimeToDate()
                         ?: "Select end date"
@@ -106,9 +96,7 @@ fun ReportDatePickerDialogContent(
             if (showStartDatePickerDialog) {
                 DatePicker(
                     state = startDatePickerState,
-                    dateValidator = { date ->
-                        date < (endDatePickerState.selectedDateMillis ?: Date().time)
-                    }
+                    dateValidator = { date -> date < (endDatePickerState.selectedDateMillis ?: Date().time) }
                 )
                 Button(
                     modifier = Modifier.align(Alignment.End),
@@ -137,16 +125,10 @@ fun ReportDatePickerDialogContent(
             Spacer(modifier = Modifier.height(16.dp))
 
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight(),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End
             ) {
-                TextButton(
-                    onClick = {
-                        onDismiss()
-                    }
-                ) {
+                TextButton(onClick = { onDismiss() }) {
                     Text(
                         color = MaterialTheme.colorScheme.secondary,
                         text = "Dismiss"

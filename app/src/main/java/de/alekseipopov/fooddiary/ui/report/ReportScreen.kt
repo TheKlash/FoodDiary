@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -57,9 +58,7 @@ fun ReportScreen(
     }
 
     Scaffold(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight(),
+        modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -67,9 +66,7 @@ fun ReportScreen(
                     titleContentColor = MaterialTheme.colorScheme.primary,
                 ),
                 navigationIcon = {
-                    IconButton(
-                        onClick = { navController.popBackStack() }
-                    ) {
+                    IconButton(onClick = { navController.popBackStack() }) {
                         Image(
                             imageVector = Icons.Filled.ArrowBack,
                             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
@@ -103,9 +100,7 @@ fun ReportScreenContent(modifier: Modifier = Modifier, records: List<DayRecord>)
         items(
             items = records,
             itemContent = {
-                DayDetailsItem(
-                    dayRecord = it
-                )
+                DayDetailsItem(dayRecord = it)
                 Spacer(Modifier.height(24.dp))
             }
         )
@@ -118,9 +113,7 @@ fun ReportScreenContentPreview() {
     FoodDiaryTheme {
         Surface {
             ReportScreenContent(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(),
+                modifier = Modifier.fillMaxSize(),
                 records = testRecordList
             )
         }
