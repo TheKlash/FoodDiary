@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.alekseipopov.fooddiary.data.model.DayRecord
 import de.alekseipopov.fooddiary.domain.DayRecordRepository
+import de.alekseipopov.fooddiary.ui.report.model.Report
 import de.alekseipopov.fooddiary.util.unixTimeToDateShort
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,9 +44,3 @@ class ReportScreenViewModel(
     }
 
 }
-
-data class Report (
-    val startDateString: String,
-    val endDateString: String,
-    val records: List<DayRecord>?
-)
