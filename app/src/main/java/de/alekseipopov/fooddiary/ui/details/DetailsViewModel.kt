@@ -1,8 +1,6 @@
 package de.alekseipopov.fooddiary.ui.details
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.alekseipopov.fooddiary.data.model.DayRecord

@@ -1,13 +1,11 @@
 package de.alekseipopov.fooddiary.domain
 
 import de.alekseipopov.fooddiary.data.model.DayRecord
-import de.alekseipopov.fooddiary.data.model.Meal
 import de.alekseipopov.fooddiary.util.testRecordList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import java.lang.Exception
 
 class DayRecordRepositoryImpl : DayRecordRepository {
 

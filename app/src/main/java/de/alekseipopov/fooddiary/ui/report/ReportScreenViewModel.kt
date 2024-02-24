@@ -3,7 +3,6 @@ package de.alekseipopov.fooddiary.ui.report
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import de.alekseipopov.fooddiary.data.model.DayRecord
 import de.alekseipopov.fooddiary.domain.DayRecordRepository
 import de.alekseipopov.fooddiary.ui.report.model.Report
 import de.alekseipopov.fooddiary.util.unixTimeToDateShort
@@ -11,10 +10,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.retry
 import kotlinx.coroutines.launch
-import java.nio.file.attribute.AclEntryFlag
 
 class ReportScreenViewModel(
     private val repository: DayRecordRepository
