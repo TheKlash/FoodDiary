@@ -26,9 +26,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import de.alekseipopov.fooddiary.R
 import de.alekseipopov.fooddiary.data.model.DayRecord
 import de.alekseipopov.fooddiary.ui.details.DayDetailsItem
 import de.alekseipopov.fooddiary.ui.theme.FoodDiaryTheme
@@ -44,7 +45,11 @@ fun ReportScreen(
 ) {
     val viewModel: ReportScreenViewModel = koinViewModel()
     val uiState = viewModel.reportRecords.collectAsState().value
-    val title = "Report: ${uiState.report?.startDateString} to ${uiState.report?.endDateString}"
+    val title = stringResource(
+        R.string.report_title,
+        uiState.report?.startDateString ?: "",
+        uiState.report?.endDateString ?: ""
+    )
 
     LaunchedEffect(uiState) {
         viewModel.getReport(startDate, endDate)
@@ -76,6 +81,7 @@ fun ReportScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = paddingValues.calculateTopPadding())
+                        .padding(8.dp)
                         .nestedScroll(rememberNestedScrollInteropConnection()),
                     records = it
                 )

@@ -31,11 +31,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.navigation.NavHostController
+import de.alekseipopov.fooddiary.R
 import de.alekseipopov.fooddiary.data.model.DayRecord
 import de.alekseipopov.fooddiary.ui.theme.FoodDiaryTheme
 import de.alekseipopov.fooddiary.util.testRecord
@@ -64,7 +65,7 @@ fun OverviewScreen(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.primary,
                 ),
-                title = { Text(text = "Overview") }
+                title = { Text(stringResource(R.string.overview_title)) }
             )
         },
         floatingActionButtonPosition = FabPosition.End,
@@ -77,7 +78,7 @@ fun OverviewScreen(
                 ExtendedFloatingActionButton(
                     modifier = Modifier.fillMaxWidth(),
                     icon = { Icon(Icons.Outlined.DateRange, "") },
-                    text = { Text("Report") },
+                    text = { Text(stringResource(R.string.overview_button_report)) },
                     containerColor = MaterialTheme.colorScheme.secondaryContainer,
                     onClick = {  viewModel.showDatePickerDialog() },
                     elevation = FloatingActionButtonDefaults.elevation(8.dp)
@@ -85,7 +86,7 @@ fun OverviewScreen(
                 ExtendedFloatingActionButton(
                     modifier = Modifier.fillMaxWidth(),
                     icon = { Icon(Icons.Filled.Add, "") },
-                    text = { Text("Add") },
+                    text = { Text(stringResource(R.string.overview_button_add)) },
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     onClick = { /*do something*/ },
                     elevation = FloatingActionButtonDefaults.elevation(8.dp)

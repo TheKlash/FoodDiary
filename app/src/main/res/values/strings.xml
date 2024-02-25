@@ -1,3 +1,26 @@
 <resources>
     <string name="app_name">FoodDiary</string>
+    
+    <!-- Overview Screen -->
+    <string name="overview_title">Overview</string>
+    <string name="overview_button_report">Report</string>
+    <string name="overview_button_add">Add</string>
+    
+    <!-- Details Screen -->
+    <string name="details_title">Day review</string>
+
+    <!-- Day Details Item -->
+    <string name="details_item_meal_counter">%1$d meals</string>
+
+    <!-- Report Screen -->
+    <string name="report_title">Report: %1$s to %2$s</string>
+
+    <!-- Report Date Picker -->
+    <string name="report_select_start_date">Select start date</string>
+    <string name="report_select_end_date">Select end date</string>
+    <string name="report_ok">OK</string>
+    <string name="report_confirm">Confirm</string>
+    <string name="report_dismiss">Dismiss</string>
+    <string name="report_select_dates">Select Dates</string>
+    
 </resources>

@@ -28,9 +28,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import de.alekseipopov.fooddiary.R
 import de.alekseipopov.fooddiary.ui.theme.FoodDiaryTheme
 import de.alekseipopov.fooddiary.util.unixTimeToDate
 
@@ -70,7 +72,7 @@ fun ReportDatePickerDialogContent(
                 Text(
                     textAlign = TextAlign.Center,
                     text = startDatePickerState.selectedDateMillis?.div(1000)?.unixTimeToDate()
-                        ?: "Select start date"
+                        ?: stringResource(R.string.report_select_start_date)
                 )
             }
 
@@ -85,7 +87,7 @@ fun ReportDatePickerDialogContent(
                 Text(
                     textAlign = TextAlign.Center,
                     text = endDatePickerState.selectedDateMillis?.div(1000)?.unixTimeToDate()
-                        ?: "Select end date"
+                        ?: stringResource(R.string.report_select_end_date)
                 )
             }
 
@@ -101,7 +103,7 @@ fun ReportDatePickerDialogContent(
                     modifier = Modifier.align(Alignment.End),
                     onClick = { showStartDatePickerDialog = false }
                 ) {
-                    Text(text = "OK")
+                    Text(stringResource(R.string.report_ok))
                 }
             }
 
@@ -117,7 +119,7 @@ fun ReportDatePickerDialogContent(
                     modifier = Modifier.align(Alignment.End),
                     onClick = { showEndDatePickerDialog = false },
                 ) {
-                    Text(text = "OK")
+                    Text(stringResource(R.string.report_ok))
                 }
             }
 
@@ -130,7 +132,7 @@ fun ReportDatePickerDialogContent(
                 TextButton(onClick = { onDismiss() }) {
                     Text(
                         color = MaterialTheme.colorScheme.secondary,
-                        text = "Dismiss"
+                        text = stringResource(R.string.report_dismiss)
                     )
                 }
 
@@ -140,7 +142,7 @@ fun ReportDatePickerDialogContent(
                             onConfirm(startDate.div(1000), endDate.div(1000))
                         } else {
                             val toast = Toast(context)
-                            toast.setText("Select Dates")
+                            toast.setText(R.string.report_select_dates)
                             toast.show()
                         }
                     }

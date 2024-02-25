@@ -24,7 +24,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import de.alekseipopov.fooddiary.R
 import de.alekseipopov.fooddiary.data.model.DayRecord
 import org.koin.androidx.compose.koinViewModel
 
@@ -57,7 +59,7 @@ fun DetailsScreen(
                         )
                     }
                 },
-                title = { Text(text = "Day review") }
+                title = { Text(stringResource(R.string.details_title)) }
             )
         },
         content = { paddingValues ->
