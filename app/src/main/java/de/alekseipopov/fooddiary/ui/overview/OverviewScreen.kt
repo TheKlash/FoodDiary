@@ -45,7 +45,10 @@ import org.koin.androidx.compose.koinViewModel
 
 @ExperimentalMaterial3Api
 @Composable
-fun OverviewScreen(navController: NavHostController) {
+fun OverviewScreen(
+    navigateToDetails: (String?) -> Unit,
+    navigateToReport: (Long?, Long?) -> Unit
+) {
 
     val viewModel: OverviewViewModel = koinViewModel()
     val uiState = viewModel.uiState.collectAsState().value
@@ -102,7 +105,7 @@ fun OverviewScreen(navController: NavHostController) {
                         .fillMaxSize()
                         .padding(top = paddingValues.calculateTopPadding()) ,
                     recordsList = uiState.recordList,
-                    onDayRecordSelected = { id -> navController.navigate("details/$id") }
+                    onDayRecordSelected = { id -> navigateToDetails(id) }
                 )
             }
         }
@@ -113,8 +116,7 @@ fun OverviewScreen(navController: NavHostController) {
             onDismissRequest = { viewModel.hideDatePickerDialog() }
         ) {
             ReportDatePickerDialogContent(
-                onConfirm = { startDate, endDate ->
-                    navController.navigate("report/$startDate/$endDate") },
+                onConfirm = { startDate, endDate -> navigateToReport(startDate, endDate) },
                 onDismiss = { viewModel.hideDatePickerDialog() }
             )
         }

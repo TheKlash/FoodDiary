@@ -38,15 +38,15 @@ import org.koin.androidx.compose.koinViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReportScreen(
-    navController: NavController,
+    onBackPressed: () -> Unit,
     startDate: Long,
     endDate: Long
 ) {
     val viewModel: ReportScreenViewModel = koinViewModel()
-    val report = viewModel.reportRecords.collectAsState()
-    val title = "Report: ${report.value?.startDateString} to ${report.value?.endDateString}"
+    val uiState = viewModel.reportRecords.collectAsState().value
+    val title = "Report: ${uiState.report?.startDateString} to ${uiState.report?.endDateString}"
 
-    LaunchedEffect(report) {
+    LaunchedEffect(uiState) {
         viewModel.getReport(startDate, endDate)
     }
 
@@ -59,7 +59,7 @@ fun ReportScreen(
                     titleContentColor = MaterialTheme.colorScheme.primary,
                 ),
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = { onBackPressed() }) {
                         Image(
                             imageVector = Icons.Filled.ArrowBack,
                             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
@@ -71,7 +71,7 @@ fun ReportScreen(
             )
         },
         content = { paddingValues ->
-            report.value?.records?.let {
+            uiState.report?.records?.let {
                 ReportScreenContent(
                     modifier = Modifier
                         .fillMaxWidth()

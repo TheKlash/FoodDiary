@@ -44,11 +44,17 @@ class MainActivity : ComponentActivity() {
 fun Navigation(navController: NavHostController) {
     NavHost(navController = navController, startDestination = "overview") {
         composable(route = "overview") {
-            OverviewScreen(navController = navController)
+            OverviewScreen(
+                navigateToDetails = { recordId -> navController.navigate("details/$recordId") },
+                navigateToReport = { startDate, endDate -> navController.navigate("report/$startDate/$endDate") }
+            )
         }
         composable(route = "details/{recordId}") {
             val recordId = it.arguments?.getString("recordId") ?: ""
-            DetailsScreen(navController = navController, recordId = recordId)
+            DetailsScreen(
+                onBackPressed = { navController.popBackStack() },
+                recordId = recordId
+            )
         }
         composable(
             route = "report/{startDate}/{endDate}",
@@ -59,7 +65,11 @@ fun Navigation(navController: NavHostController) {
         ) {
             val startDate = it.arguments?.getLong("startDate") ?: 0L
             val endDate = it.arguments?.getLong("endDate") ?: 0L
-            ReportScreen(navController = navController, startDate = startDate, endDate = endDate)
+            ReportScreen(
+                onBackPressed = { navController.popBackStack() },
+                startDate = startDate,
+                endDate = endDate
+            )
         }
     }
 }

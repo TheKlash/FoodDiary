@@ -25,13 +25,15 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import de.alekseipopov.fooddiary.data.model.DayRecord
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailsScreen(navController: NavHostController, recordId: String) {
+fun DetailsScreen(
+    onBackPressed: () -> Unit,
+    recordId: String
+) {
 
     val viewModel: DetailsViewModel = koinViewModel()
     val uiState = viewModel.uiState.collectAsState().value
@@ -46,7 +48,7 @@ fun DetailsScreen(navController: NavHostController, recordId: String) {
                 ),
                 navigationIcon = {
                     IconButton(
-                        onClick = { navController.popBackStack() }
+                        onClick = { onBackPressed() }
                     ) {
                         Image(
                             imageVector = Icons.Filled.ArrowBack,
