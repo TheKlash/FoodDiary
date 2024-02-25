@@ -1,6 +1,7 @@
 package de.alekseipopov.fooddiary.ui.details
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -32,8 +34,8 @@ import org.koin.androidx.compose.koinViewModel
 fun DetailsScreen(navController: NavHostController, recordId: String) {
 
     val viewModel: DetailsViewModel = koinViewModel()
-    val record = viewModel.record.collectAsState()
-    LaunchedEffect(key1 = record) { viewModel.getRecord(recordId) }
+    val uiState = viewModel.uiState.collectAsState().value
+    LaunchedEffect(key1 = uiState) { viewModel.getRecord(recordId) }
 
     Scaffold(
         topBar = {
@@ -57,15 +59,25 @@ fun DetailsScreen(navController: NavHostController, recordId: String) {
             )
         },
         content = { paddingValues ->
-            record.value?.let { dayRecord ->
-                DetailsScreenContent(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = paddingValues.calculateTopPadding())
-                        .padding(8.dp)
-                        .nestedScroll(rememberNestedScrollInteropConnection()),
-                    record = dayRecord
-                )
+            if (uiState.isLoading) {
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = paddingValues.calculateTopPadding())
+                    .padding(8.dp)) {
+                    CircularProgressIndicator()
+                }
+            } else {
+                uiState.record?.let { dayRecord ->
+                    DetailsScreenContent(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = paddingValues.calculateTopPadding())
+                            .padding(8.dp)
+                            .nestedScroll(rememberNestedScrollInteropConnection()),
+                        record = dayRecord
+                    )
+                }
+
             }
         }
     )

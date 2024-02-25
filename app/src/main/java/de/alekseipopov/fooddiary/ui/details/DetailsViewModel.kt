@@ -5,29 +5,33 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.alekseipopov.fooddiary.data.model.DayRecord
 import de.alekseipopov.fooddiary.domain.DayRecordRepository
+import de.alekseipopov.fooddiary.ui.details.model.DetailsUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class DetailsViewModel(
     val repository: DayRecordRepository
 ) : ViewModel() {
 
-    val record: StateFlow<DayRecord?>
-        get() = _record
-    private val _record = MutableStateFlow<DayRecord?>(null)
+    val uiState: StateFlow<DetailsUiState>
+        get() = _uiState
+    private val _uiState = MutableStateFlow(DetailsUiState())
 
     fun getRecord(id: String?) {
         id?.let {
+            _uiState.update { state -> state.copy(isLoading = true) }
             viewModelScope.launch(Dispatchers.IO) {
                 repository.getRecord(id)
                     .catch { exception ->
+                        _uiState.update { state -> state.copy(isLoading = false, errorMessage = exception.localizedMessage) }
                         Log.e("Exception!", exception.localizedMessage ?: "")
                     }
                     .collect {
-                        _record.emit(it)
+                        _uiState.update { state -> state.copy(isLoading = false, record = it) }
                     }
             }
         }

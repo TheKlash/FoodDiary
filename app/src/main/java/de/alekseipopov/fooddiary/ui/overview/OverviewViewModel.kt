@@ -19,7 +19,7 @@ class OverviewViewModel(
 
     val uiState: StateFlow<OverviewUiState>
         get() = _uiState.asStateFlow()
-    private var _uiState: MutableStateFlow<OverviewUiState> = MutableStateFlow(OverviewUiState())
+    private var _uiState = MutableStateFlow(OverviewUiState())
 
     fun getRecords() {
         _uiState.update { state -> state.copy(isLoading = true) }
