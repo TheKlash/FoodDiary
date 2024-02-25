@@ -14,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FabPosition
@@ -28,10 +29,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -51,11 +48,9 @@ import org.koin.androidx.compose.koinViewModel
 fun OverviewScreen(navController: NavHostController) {
 
     val viewModel: OverviewViewModel = koinViewModel()
-    val recordsList = viewModel.recordsList.collectAsState()
+    val uiState = viewModel.uiState.collectAsState().value
 
-    var showReportDatePickerDialog by remember { mutableStateOf(false) }
-
-    LaunchedEffect(key1 = recordsList) {
+    LaunchedEffect(key1 = uiState) {
         viewModel.getRecords()
     }
 
@@ -81,7 +76,7 @@ fun OverviewScreen(navController: NavHostController) {
                     icon = { Icon(Icons.Outlined.DateRange, "") },
                     text = { Text("Report") },
                     containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                    onClick = { showReportDatePickerDialog = true },
+                    onClick = {  viewModel.showDatePickerDialog() },
                     elevation = FloatingActionButtonDefaults.elevation(8.dp)
                 )
                 ExtendedFloatingActionButton(
@@ -95,23 +90,32 @@ fun OverviewScreen(navController: NavHostController) {
             }
         },
         content = { paddingValues ->
-            OverviewScreenContent(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = paddingValues.calculateTopPadding()) ,
-                recordsList = recordsList.value,
-                onDayRecordSelected = { id -> navController.navigate("details/$id") }
-            )
+            if (uiState.isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = paddingValues.calculateTopPadding())
+                )
+            } else {
+                OverviewScreenContent(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = paddingValues.calculateTopPadding()) ,
+                    recordsList = uiState.recordList,
+                    onDayRecordSelected = { id -> navController.navigate("details/$id") }
+                )
+            }
         }
     )
 
-    if (showReportDatePickerDialog) {
+    if (uiState.showDatePickerDialog) {
         Dialog(
-            onDismissRequest = { }
+            onDismissRequest = { viewModel.hideDatePickerDialog() }
         ) {
             ReportDatePickerDialogContent(
-                navController = navController,
-                onDismiss = { showReportDatePickerDialog = false }
+                onConfirm = { startDate, endDate ->
+                    navController.navigate("report/$startDate/$endDate") },
+                onDismiss = { viewModel.hideDatePickerDialog() }
             )
         }
     }
@@ -123,7 +127,6 @@ fun OverviewScreenContent(
     recordsList: List<DayRecord>?,
     onDayRecordSelected: (String?) -> Unit
 ) {
-
     Box(
         modifier = modifier
     ) {
@@ -138,8 +141,10 @@ fun OverviewScreenContent(
                     items = recordsList,
                     itemContent = {
                         DayRecordListItem(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { onDayRecordSelected(it.id) },
                             dayRecord = it,
-                            navigate = { id -> onDayRecordSelected(id) }
                         )
                     }
                 )
@@ -150,21 +155,14 @@ fun OverviewScreenContent(
 
 @Composable
 fun DayRecordListItem(
+    modifier: Modifier,
     dayRecord: DayRecord,
-    navigate: (String?) -> Unit
 ) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { navigate(dayRecord.id) },
-    ) {
+    Card(modifier = modifier) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(
-                    horizontal = 12.dp,
-                    vertical = 8.dp
-                )
+                .padding(horizontal = 12.dp, vertical = 8.dp)
         ) {
             Text(
                 text = dayRecord.date.unixTimeToDate(),
@@ -173,13 +171,14 @@ fun DayRecordListItem(
         }
     }
 }
+
 @Composable
 @Preview
 fun DayRecordListItemPreview() {
     FoodDiaryTheme {
         DayRecordListItem(
-            testRecord,
-            navigate = { }
+            modifier = Modifier.fillMaxSize(),
+            dayRecord = testRecord
         )
     }
 }

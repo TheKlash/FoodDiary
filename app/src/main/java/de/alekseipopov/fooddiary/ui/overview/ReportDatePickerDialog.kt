@@ -9,9 +9,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -29,21 +31,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import de.alekseipopov.fooddiary.ui.theme.FoodDiaryTheme
 import de.alekseipopov.fooddiary.util.unixTimeToDate
-import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReportDatePickerDialogContent(
-    navController: NavHostController,
+    onConfirm: (Long?, Long?) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    var startDatePickerState = rememberDatePickerState()
+    var startDatePickerState = rememberDatePickerState(initialDisplayMode = DisplayMode.Input)
     var showStartDatePickerDialog by remember { mutableStateOf(false) }
-    var endDatePickerState = rememberDatePickerState()
+    var endDatePickerState = rememberDatePickerState(initialDisplayMode = DisplayMode.Input)
     var showEndDatePickerDialog by remember { mutableStateOf(false) }
 
     val startDate = startDatePickerState.selectedDateMillis
@@ -51,8 +50,8 @@ fun ReportDatePickerDialogContent(
 
     val context = LocalContext.current
 
-    Card(
-        modifier = Modifier.width(330.dp)
+    Surface(
+        modifier = Modifier.width(500.dp),
     ) {
         Column(
             modifier = Modifier
@@ -92,8 +91,11 @@ fun ReportDatePickerDialogContent(
 
             if (showStartDatePickerDialog) {
                 DatePicker(
+                    modifier = Modifier.wrapContentSize(),
                     state = startDatePickerState,
-                    dateValidator = { date -> date < (endDatePickerState.selectedDateMillis ?: Date().time) }
+                    dateValidator = { date ->
+                        date < (endDatePickerState.selectedDateMillis ?: System.currentTimeMillis())
+                    }
                 )
                 Button(
                     modifier = Modifier.align(Alignment.End),
@@ -105,10 +107,10 @@ fun ReportDatePickerDialogContent(
 
             if (showEndDatePickerDialog) {
                 DatePicker(
+                    modifier = Modifier.wrapContentSize(),
                     state = endDatePickerState,
                     dateValidator = { date ->
-                        date > (startDatePickerState.selectedDateMillis
-                            ?: 0L) && date <= Date().time
+                        date > (startDatePickerState.selectedDateMillis ?: 0L) && date <= System.currentTimeMillis()
                     }
                 )
                 Button(
@@ -135,9 +137,7 @@ fun ReportDatePickerDialogContent(
                 TextButton(
                     onClick = {
                         if (startDate != null && endDate != null) {
-                            navController.navigate(
-                                "report/${startDate.div(1000)}/${endDate.div(1000)}"
-                            )
+                            onConfirm(startDate.div(1000), endDate.div(1000))
                         } else {
                             val toast = Toast(context)
                             toast.setText("Select Dates")
@@ -161,7 +161,7 @@ fun ReportDatePickerDialogContentPreview() {
     FoodDiaryTheme {
         Surface {
             ReportDatePickerDialogContent(
-                navController = rememberNavController(),
+                onConfirm = { start, end -> },
                 onDismiss = { }
             )
         }
