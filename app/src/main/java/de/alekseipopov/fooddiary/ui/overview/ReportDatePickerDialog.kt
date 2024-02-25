@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -61,7 +60,7 @@ fun ReportDatePickerDialogContent(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(text = "From")
+            Text(stringResource(R.string.report_from))
 
             Button(
                 modifier = Modifier.fillMaxWidth(),
@@ -76,7 +75,7 @@ fun ReportDatePickerDialogContent(
                 )
             }
 
-            Text(text = "To")
+            Text(stringResource(R.string.report_to))
 
             Button(
                 modifier = Modifier.fillMaxWidth(),
@@ -149,7 +148,7 @@ fun ReportDatePickerDialogContent(
                 ) {
                     Text(
                         color = MaterialTheme.colorScheme.primary,
-                        text = "Confirm"
+                        text = stringResource(R.string.report_confirm)
                     )
                 }
             }

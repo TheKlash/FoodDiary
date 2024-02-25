@@ -18,6 +18,8 @@
     <!-- Report Date Picker -->
     <string name="report_select_start_date">Select start date</string>
     <string name="report_select_end_date">Select end date</string>
+    <string name="report_from">From</string>
+    <string name="report_to">To</string>
     <string name="report_ok">OK</string>
     <string name="report_confirm">Confirm</string>
     <string name="report_dismiss">Dismiss</string>
