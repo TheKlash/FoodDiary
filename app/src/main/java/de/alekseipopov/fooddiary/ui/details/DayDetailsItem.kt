@@ -32,10 +32,6 @@ fun DayDetailsItem(
     dayRecord: DayRecord?
 ) {
     Column {
-        Text(
-            fontSize = 24.sp,
-            text = dayRecord?.date?.unixTimeToDate() ?: ""
-        )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             stringResource(

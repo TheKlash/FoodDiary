@@ -29,11 +29,13 @@ import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import de.alekseipopov.fooddiary.R
 import de.alekseipopov.fooddiary.data.model.DayRecord
 import de.alekseipopov.fooddiary.ui.details.DayDetailsItem
 import de.alekseipopov.fooddiary.ui.theme.FoodDiaryTheme
 import de.alekseipopov.fooddiary.util.testRecordList
+import de.alekseipopov.fooddiary.util.unixTimeToDate
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -99,6 +101,10 @@ fun ReportScreenContent(modifier: Modifier = Modifier, records: List<DayRecord>)
         items(
             items = records,
             itemContent = {
+                Text(
+                    fontSize = 24.sp,
+                    text = it.date.unixTimeToDate()
+                )
                 DayDetailsItem(dayRecord = it)
                 Spacer(Modifier.height(24.dp))
             }

@@ -24,5 +24,12 @@
     <string name="report_confirm">Confirm</string>
     <string name="report_dismiss">Dismiss</string>
     <string name="report_select_dates">Select Dates</string>
+
+    <!-- Edit Day dialog -->
+    <string name="edit_day_title">Edit Day</string>
+    <string name="edit_day_title_new_day">Add new day</string>
+    <string name="edit_day_select_date">Select date</string>
+    <string name="edit_day_dismiss">Dismiss</string>
+    <string name="edit_day_confirm">Confirm</string>
     
 </resources>
