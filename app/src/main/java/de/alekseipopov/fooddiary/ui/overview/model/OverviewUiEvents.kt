@@ -1,4 +1,4 @@
-package de.alekseipopov.fooddiary.ui.overview
+package de.alekseipopov.fooddiary.ui.overview.model
 
 sealed class OverviewUiEvents() {
     class ShowReportDatePickerDialog() : OverviewUiEvents()

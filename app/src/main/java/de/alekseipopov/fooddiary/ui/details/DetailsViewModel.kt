@@ -5,11 +5,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.alekseipopov.fooddiary.data.model.DayRecord
 import de.alekseipopov.fooddiary.domain.DayRecordRepository
+import de.alekseipopov.fooddiary.ui.details.model.DetailsUiEvents
 import de.alekseipopov.fooddiary.ui.details.model.DetailsUiState
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -17,9 +20,12 @@ class DetailsViewModel(
     val repository: DayRecordRepository
 ) : ViewModel() {
 
+    private val _uiState = MutableStateFlow(DetailsUiState())
     val uiState: StateFlow<DetailsUiState>
         get() = _uiState
-    private val _uiState = MutableStateFlow(DetailsUiState())
+
+    private val _uiEvents = Channel<DetailsUiEvents>()
+    val uiEvents = _uiEvents.receiveAsFlow()
 
     fun getRecord(id: String?) {
         id?.let {
@@ -34,6 +40,18 @@ class DetailsViewModel(
                         _uiState.update { state -> state.copy(isLoading = false, record = it) }
                     }
             }
+        }
+    }
+
+    fun showEditEntryDialog() {
+        viewModelScope.launch(Dispatchers.Main) {
+            _uiEvents.send(DetailsUiEvents.ShowEditDateDialog())
+        }
+    }
+
+    fun hideEditEntryDialog() {
+        viewModelScope.launch(Dispatchers.Main) {
+            _uiEvents.send(DetailsUiEvents.HideEditDateDialog())
         }
     }
 

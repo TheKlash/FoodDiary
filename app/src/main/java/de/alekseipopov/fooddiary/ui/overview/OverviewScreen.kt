@@ -39,6 +39,7 @@ import androidx.compose.ui.window.Dialog
 import de.alekseipopov.fooddiary.R
 import de.alekseipopov.fooddiary.data.model.DayRecord
 import de.alekseipopov.fooddiary.ui.details.EditDayDialogContent
+import de.alekseipopov.fooddiary.ui.overview.model.OverviewUiEvents
 import de.alekseipopov.fooddiary.ui.theme.FoodDiaryTheme
 import de.alekseipopov.fooddiary.util.testRecord
 import de.alekseipopov.fooddiary.util.testRecordList

@@ -27,12 +27,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import de.alekseipopov.fooddiary.R
+import androidx.compose.ui.window.Dialog
 import de.alekseipopov.fooddiary.data.model.DayRecord
+import de.alekseipopov.fooddiary.ui.details.model.DetailsUiEvents
 import de.alekseipopov.fooddiary.util.testRecord
 import de.alekseipopov.fooddiary.util.unixTimeToDate
 import org.koin.androidx.compose.koinViewModel
@@ -43,9 +42,9 @@ fun DetailsScreen(
     onBackPressed: () -> Unit,
     recordId: String
 ) {
-
     val viewModel: DetailsViewModel = koinViewModel()
     val uiState = viewModel.uiState.collectAsState().value
+    val uiEvents = viewModel.uiEvents.collectAsState(null).value
     LaunchedEffect(key1 = uiState) { viewModel.getRecord(recordId) }
 
     Scaffold(
@@ -70,7 +69,7 @@ fun DetailsScreen(
                     Text(text = uiState.record?.date?.unixTimeToDate() ?: "")
                 },
                 actions = {
-                    IconButton(onClick = {/* TODO */}) {
+                    IconButton(onClick = { viewModel.showEditEntryDialog() }) {
                         Image(
                             imageVector = Icons.Filled.Edit,
                             colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
@@ -103,6 +102,26 @@ fun DetailsScreen(
             }
         }
     )
+    when (uiEvents) {
+        is DetailsUiEvents.ShowEditDateDialog -> {
+            Dialog(
+                onDismissRequest = { viewModel.hideEditEntryDialog() }
+            ) {
+                Surface {
+                    EditDayDialogContent(
+                        currentDay = (uiState.record?.date ?: 0) * 1000,
+                        onConfirm = {
+                                    // TODO: call ViewModel to update date
+                            },
+                        onDismiss = { viewModel.hideEditEntryDialog() }
+                    )
+                }
+            }
+
+        }
+        else -> { }
+    }
+
 }
 
 @Composable
