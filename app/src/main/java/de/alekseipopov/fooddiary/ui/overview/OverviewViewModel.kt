@@ -20,6 +20,9 @@ class OverviewViewModel(
     val uiState: StateFlow<OverviewUiState>
         get() = _uiState.asStateFlow()
     private var _uiState = MutableStateFlow(OverviewUiState())
+    val uiEvents: StateFlow<OverviewUiEvents?>
+        get() = _uiEvents.asStateFlow()
+    private var _uiEvents = MutableStateFlow<OverviewUiEvents?>(null)
 
     fun getRecords() {
         _uiState.update { state -> state.copy(isLoading = true) }
@@ -37,12 +40,19 @@ class OverviewViewModel(
         }
     }
 
-    fun showDatePickerDialog() {
-        _uiState.update {  state -> state.copy(showDatePickerDialog = true) }
+    fun showReportDatePickerDialog() {
+        _uiEvents.update { state -> OverviewUiEvents.ShowReportDatePickerDialog() }
     }
 
-    fun hideDatePickerDialog() {
-        _uiState.update {  state -> state.copy(showDatePickerDialog = false) }
+    fun hideReportDatePickerDialog() {
+        _uiEvents.update {  state -> OverviewUiEvents.HideReportDatePickerDialog() }
     }
 
+    fun showNewEntryDialog() {
+        _uiEvents.update { state -> OverviewUiEvents.ShowNewEntryDialog() }
+    }
+
+    fun hideNewEntryDialog() {
+        _uiEvents.update { state -> OverviewUiEvents.HideNewEntryDialog() }
+    }
 }

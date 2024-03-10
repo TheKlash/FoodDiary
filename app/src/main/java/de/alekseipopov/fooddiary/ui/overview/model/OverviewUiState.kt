@@ -6,5 +6,4 @@ data class OverviewUiState(
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
     val recordList: List<DayRecord>? = null,
-    val showDatePickerDialog: Boolean = false
 )

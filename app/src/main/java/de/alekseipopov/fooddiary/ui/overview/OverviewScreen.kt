@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import de.alekseipopov.fooddiary.R
 import de.alekseipopov.fooddiary.data.model.DayRecord
+import de.alekseipopov.fooddiary.ui.details.EditDayDialogContent
 import de.alekseipopov.fooddiary.ui.theme.FoodDiaryTheme
 import de.alekseipopov.fooddiary.util.testRecord
 import de.alekseipopov.fooddiary.util.testRecordList
@@ -50,9 +51,9 @@ fun OverviewScreen(
     navigateToDetails: (String?) -> Unit,
     navigateToReport: (Long?, Long?) -> Unit
 ) {
-
     val viewModel: OverviewViewModel = koinViewModel()
     val uiState = viewModel.uiState.collectAsState().value
+    val uiEvents = viewModel.uiEvents.collectAsState().value
 
     LaunchedEffect(key1 = uiState) {
         viewModel.getRecords()
@@ -80,7 +81,7 @@ fun OverviewScreen(
                     icon = { Icon(Icons.Outlined.DateRange, "") },
                     text = { Text(stringResource(R.string.overview_button_report)) },
                     containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                    onClick = {  viewModel.showDatePickerDialog() },
+                    onClick = { viewModel.showReportDatePickerDialog() },
                     elevation = FloatingActionButtonDefaults.elevation(8.dp)
                 )
                 ExtendedFloatingActionButton(
@@ -88,7 +89,7 @@ fun OverviewScreen(
                     icon = { Icon(Icons.Filled.Add, "") },
                     text = { Text(stringResource(R.string.overview_button_add)) },
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    onClick = { /*do something*/ },
+                    onClick = { viewModel.showNewEntryDialog() },
                     elevation = FloatingActionButtonDefaults.elevation(8.dp)
                 )
             }
@@ -112,15 +113,33 @@ fun OverviewScreen(
         }
     )
 
-    if (uiState.showDatePickerDialog) {
-        Dialog(
-            onDismissRequest = { viewModel.hideDatePickerDialog() }
-        ) {
-            ReportDatePickerDialogContent(
-                onConfirm = { startDate, endDate -> navigateToReport(startDate, endDate) },
-                onDismiss = { viewModel.hideDatePickerDialog() }
-            )
+    when (uiEvents) {
+        is OverviewUiEvents.ShowReportDatePickerDialog -> {
+            Dialog(
+                onDismissRequest = { viewModel.hideReportDatePickerDialog() }
+            ) {
+                ReportDatePickerDialogContent(
+                    onConfirm = { startDate, endDate -> navigateToReport(startDate, endDate) },
+                    onDismiss = { viewModel.hideReportDatePickerDialog() }
+                )
+            }
         }
+        is OverviewUiEvents.ShowNewEntryDialog -> {
+            Dialog(
+                onDismissRequest = { viewModel.hideNewEntryDialog() }
+            ) {
+                Surface {
+                    EditDayDialogContent(
+                        onConfirm = {
+                            //TODO: call ViewModel to create new record
+                            viewModel.hideNewEntryDialog()
+                        },
+                        onDismiss = { viewModel.hideNewEntryDialog() }
+                    )
+                }
+            }
+        }
+        else -> { }
     }
 }
 
