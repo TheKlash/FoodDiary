@@ -4,10 +4,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -40,6 +42,7 @@ import de.alekseipopov.fooddiary.R
 import de.alekseipopov.fooddiary.data.model.DayRecord
 import de.alekseipopov.fooddiary.ui.details.EditDayDialogContent
 import de.alekseipopov.fooddiary.ui.overview.model.OverviewUiEvents
+import de.alekseipopov.fooddiary.ui.overview.model.OverviewUiState
 import de.alekseipopov.fooddiary.ui.theme.FoodDiaryTheme
 import de.alekseipopov.fooddiary.util.testRecord
 import de.alekseipopov.fooddiary.util.testRecordList
@@ -61,60 +64,33 @@ fun OverviewScreen(
     }
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
-                ),
-                title = { Text(stringResource(R.string.overview_title)) }
-            )
-        },
+        topBar = { OverviewTopBar() },
         floatingActionButtonPosition = FabPosition.End,
         floatingActionButton = {
-            Column(
-                modifier = Modifier.width(120.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                horizontalAlignment = Alignment.End
-            ) {
-                ExtendedFloatingActionButton(
-                    modifier = Modifier.fillMaxWidth(),
-                    icon = { Icon(Icons.Outlined.DateRange, "") },
-                    text = { Text(stringResource(R.string.overview_button_report)) },
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                    onClick = { viewModel.showReportDatePickerDialog() },
-                    elevation = FloatingActionButtonDefaults.elevation(8.dp)
-                )
-                ExtendedFloatingActionButton(
-                    modifier = Modifier.fillMaxWidth(),
-                    icon = { Icon(Icons.Filled.Add, "") },
-                    text = { Text(stringResource(R.string.overview_button_add)) },
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    onClick = { viewModel.showNewEntryDialog() },
-                    elevation = FloatingActionButtonDefaults.elevation(8.dp)
-                )
-            }
+            OverviewFab(
+                onReportClick = { viewModel.showNewEntryDialog() },
+                onAddClick = { viewModel.showNewEntryDialog() }
+            )
         },
         content = { paddingValues ->
-            if (uiState.isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(top = paddingValues.calculateTopPadding())
-                )
-            } else {
-                OverviewScreenContent(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(top = paddingValues.calculateTopPadding()) ,
-                    recordsList = uiState.recordList,
-                    onDayRecordSelected = { id -> navigateToDetails(id) }
-                )
-            }
+            OverviewScreenContent (
+                paddingValues = paddingValues,
+                uiState = uiState,
+                onDayRecordSelected = { id -> navigateToDetails(id) }
+            )
         }
     )
 
-    when (uiEvents) {
+    OverviewObserveUiEvents(uiEvents, viewModel, navigateToReport)
+}
+
+@Composable
+fun OverviewObserveUiEvents(
+    events: OverviewUiEvents?,
+    viewModel: OverviewViewModel,
+    navigateToReport: (Long?, Long?) -> Unit
+) {
+    when (events) {
         is OverviewUiEvents.ShowReportDatePickerDialog -> {
             Dialog(
                 onDismissRequest = { viewModel.hideReportDatePickerDialog() }
@@ -142,16 +118,84 @@ fun OverviewScreen(
         }
         else -> { }
     }
+
 }
+
+/** Components region **/
 
 @Composable
 fun OverviewScreenContent(
-    modifier : Modifier,
+    paddingValues: PaddingValues,
+    uiState: OverviewUiState,
+    onDayRecordSelected: (String?) -> Unit = { }
+) {
+    if (uiState.isLoading) {
+        CircularProgressIndicator(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = paddingValues.calculateTopPadding())
+        )
+    } else {
+        DayRecordList(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = paddingValues.calculateTopPadding()),
+            uiState.recordList,
+            onDayRecordSelected
+        )
+    }
+}
+
+@ExperimentalMaterial3Api
+@Composable
+private fun OverviewTopBar() {
+    TopAppBar(
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            titleContentColor = MaterialTheme.colorScheme.primary,
+        ),
+        title = { Text(stringResource(R.string.overview_title)) }
+    )
+
+}
+
+@Composable
+fun OverviewFab (
+    onReportClick: () -> Unit = { },
+    onAddClick: () -> Unit = { }
+) {
+    Column(
+        modifier = Modifier.width(120.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalAlignment = Alignment.End
+    ) {
+        ExtendedFloatingActionButton(
+            modifier = Modifier.fillMaxWidth(),
+            icon = { Icon(Icons.Outlined.DateRange, "") },
+            text = { Text(stringResource(R.string.overview_button_report)) },
+            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            onClick = { onReportClick() },
+            elevation = FloatingActionButtonDefaults.elevation(8.dp)
+        )
+        ExtendedFloatingActionButton(
+            modifier = Modifier.fillMaxWidth(),
+            icon = { Icon(Icons.Filled.Add, "") },
+            text = { Text(stringResource(R.string.overview_button_add)) },
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            onClick = { onAddClick() },
+            elevation = FloatingActionButtonDefaults.elevation(8.dp)
+        )
+    }
+}
+
+@Composable
+fun DayRecordList(
+    modifier: Modifier = Modifier,
     recordsList: List<DayRecord>?,
-    onDayRecordSelected: (String?) -> Unit
+    onDayRecordSelected: (String?) -> Unit = { }
 ) {
     Box(
-        modifier = modifier
+        modifier = modifier ,
     ) {
         recordsList?.let {
             LazyColumn(
@@ -161,7 +205,7 @@ fun OverviewScreenContent(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(
-                    items = recordsList,
+                    items = it,
                     itemContent = {
                         DayRecordListItem(
                             modifier = Modifier
@@ -178,7 +222,7 @@ fun OverviewScreenContent(
 
 @Composable
 fun DayRecordListItem(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     dayRecord: DayRecord,
 ) {
     Card(modifier = modifier) {
@@ -195,16 +239,29 @@ fun DayRecordListItem(
     }
 }
 
+/** Preview Region **/
+
+@Composable
+@Preview
+fun OverviewFabPreview() {
+    FoodDiaryTheme {
+        OverviewFab()
+    }
+}
+
 @Composable
 @Preview
 fun DayRecordListItemPreview() {
     FoodDiaryTheme {
         DayRecordListItem(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight(),
             dayRecord = testRecord
         )
     }
 }
+
 
 @ExperimentalMaterial3Api
 @Composable
@@ -212,7 +269,7 @@ fun DayRecordListItemPreview() {
 fun OverviewScreenContentPreview() {
     FoodDiaryTheme {
         Surface {
-            OverviewScreenContent(
+            DayRecordList(
                 modifier = Modifier.fillMaxWidth(),
                 recordsList = testRecordList,
                 onDayRecordSelected = { }
