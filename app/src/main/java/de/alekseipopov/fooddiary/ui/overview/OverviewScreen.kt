@@ -4,17 +4,19 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.DateRange
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -29,20 +31,21 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import de.alekseipopov.fooddiary.R
 import de.alekseipopov.fooddiary.data.model.DayRecord
+import de.alekseipopov.fooddiary.ui.base.UiState
 import de.alekseipopov.fooddiary.ui.details.EditDayDialogContent
 import de.alekseipopov.fooddiary.ui.overview.model.OverviewUiEvents
-import de.alekseipopov.fooddiary.ui.overview.model.OverviewUiState
 import de.alekseipopov.fooddiary.ui.theme.FoodDiaryTheme
 import de.alekseipopov.fooddiary.util.testRecord
 import de.alekseipopov.fooddiary.util.testRecordList
@@ -56,28 +59,41 @@ fun OverviewScreen(
     navigateToReport: (Long?, Long?) -> Unit
 ) {
     val viewModel: OverviewViewModel = koinViewModel()
-    val uiState = viewModel.uiState.collectAsState().value
+    val uiState by viewModel.uiState.collectAsState()
     val uiEvents = viewModel.uiEvents.collectAsState().value
 
-    LaunchedEffect(key1 = uiState) {
-        viewModel.getRecords()
-    }
-
     Scaffold(
-        topBar = { OverviewTopBar() },
+        topBar = { TopBar() },
         floatingActionButtonPosition = FabPosition.End,
         floatingActionButton = {
-            OverviewFab(
-                onReportClick = { viewModel.showNewEntryDialog() },
+            Fab(
+                onReportClick = { viewModel.showReportDatePickerDialog() },
                 onAddClick = { viewModel.showNewEntryDialog() }
             )
         },
         content = { paddingValues ->
-            OverviewScreenContent (
-                paddingValues = paddingValues,
-                uiState = uiState,
-                onDayRecordSelected = { id -> navigateToDetails(id) }
-            )
+            Box(
+                modifier = Modifier
+                    .padding(top = paddingValues.calculateTopPadding())
+            ) {
+                when (uiState) {
+                    is UiState.Loading -> { StateLoading() }
+                    is UiState.Result<*> -> {
+                        StateResult (
+                            dayRecords = (uiState as UiState.Result<List<DayRecord>>).data,
+                            onDayRecordSelected = { id ->
+                                navigateToDetails(id)
+                            }
+                        )
+                    }
+                    is UiState.Error<*> -> {
+                        StateError (
+                            throwable = (uiState as UiState.Error<*>).throwable,
+                            onRetryPressed = { viewModel.getRecords() }
+                        )
+                    }
+                }
+            }
         }
     )
 
@@ -85,7 +101,7 @@ fun OverviewScreen(
 }
 
 @Composable
-fun OverviewObserveUiEvents(
+private fun OverviewObserveUiEvents(
     events: OverviewUiEvents?,
     viewModel: OverviewViewModel,
     navigateToReport: (Long?, Long?) -> Unit
@@ -101,6 +117,7 @@ fun OverviewObserveUiEvents(
                 )
             }
         }
+
         is OverviewUiEvents.ShowNewEntryDialog -> {
             Dialog(
                 onDismissRequest = { viewModel.hideNewEntryDialog() }
@@ -116,39 +133,63 @@ fun OverviewObserveUiEvents(
                 }
             }
         }
-        else -> { }
+
+        else -> {}
     }
 
 }
 
-/** Components region **/
-
 @Composable
-fun OverviewScreenContent(
-    paddingValues: PaddingValues,
-    uiState: OverviewUiState,
-    onDayRecordSelected: (String?) -> Unit = { }
-) {
-    if (uiState.isLoading) {
+private fun StateLoading() {
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
         CircularProgressIndicator(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(top = paddingValues.calculateTopPadding())
+                .height(300.dp)
+                .width(300.dp)
         )
-    } else {
+
+    }
+}
+
+@Composable
+private fun StateResult(
+    dayRecords: List<DayRecord>,
+    onDayRecordSelected: (String?) -> Unit = { }
+) {
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
         DayRecordList(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(top = paddingValues.calculateTopPadding()),
-            uiState.recordList,
+            dayRecords,
             onDayRecordSelected
         )
     }
 }
 
+@Composable
+private fun StateError(
+    throwable: Throwable,
+    onRetryPressed: () -> Unit = { }
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+    ) {
+        Button(onClick = onRetryPressed) {
+            Text(
+                textAlign = TextAlign.Center,
+                text = "Error! ${throwable.localizedMessage} Please try again!")
+        }
+    }
+}
+
+/** Components region **/
+
 @ExperimentalMaterial3Api
 @Composable
-private fun OverviewTopBar() {
+private fun TopBar() {
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -160,7 +201,7 @@ private fun OverviewTopBar() {
 }
 
 @Composable
-fun OverviewFab (
+private fun Fab(
     onReportClick: () -> Unit = { },
     onAddClick: () -> Unit = { }
 ) {
@@ -189,39 +230,34 @@ fun OverviewFab (
 }
 
 @Composable
-fun DayRecordList(
-    modifier: Modifier = Modifier,
+private fun DayRecordList(
     recordsList: List<DayRecord>?,
     onDayRecordSelected: (String?) -> Unit = { }
 ) {
-    Box(
-        modifier = modifier ,
-    ) {
-        recordsList?.let {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(
-                    items = it,
-                    itemContent = {
-                        DayRecordListItem(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable { onDayRecordSelected(it.id) },
-                            dayRecord = it,
-                        )
-                    }
-                )
-            }
+    recordsList?.let {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(
+                items = it,
+                itemContent = {
+                    DayRecordListItem(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { onDayRecordSelected(it.id) },
+                        dayRecord = it,
+                    )
+                }
+            )
         }
     }
 }
 
 @Composable
-fun DayRecordListItem(
+private fun DayRecordListItem(
     modifier: Modifier = Modifier,
     dayRecord: DayRecord,
 ) {
@@ -243,15 +279,15 @@ fun DayRecordListItem(
 
 @Composable
 @Preview
-fun OverviewFabPreview() {
+private fun FabPreview() {
     FoodDiaryTheme {
-        OverviewFab()
+        Fab()
     }
 }
 
 @Composable
 @Preview
-fun DayRecordListItemPreview() {
+private fun DayRecordListItemPreview() {
     FoodDiaryTheme {
         DayRecordListItem(
             modifier = Modifier
@@ -263,17 +299,31 @@ fun DayRecordListItemPreview() {
 }
 
 
-@ExperimentalMaterial3Api
 @Composable
 @Preview
-fun OverviewScreenContentPreview() {
+private fun OverviewScreenPreview_Loading() {
     FoodDiaryTheme {
         Surface {
-            DayRecordList(
-                modifier = Modifier.fillMaxWidth(),
-                recordsList = testRecordList,
-                onDayRecordSelected = { }
-            )
+            StateLoading()
+        }
+    }
+}
+
+@Composable
+@Preview
+private fun OverviewScreenPreview_Result() {
+    FoodDiaryTheme {
+        Surface {
+            StateResult(dayRecords = testRecordList)
+        }
+    }
+}
+@Composable
+@Preview
+private fun OverviewScreenPreview_Error() {
+    FoodDiaryTheme {
+        Surface {
+            StateError(throwable = Throwable("Your mom is gay!"))
         }
     }
 }

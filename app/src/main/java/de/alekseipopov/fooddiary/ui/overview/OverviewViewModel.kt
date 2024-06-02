@@ -1,11 +1,12 @@
 package de.alekseipopov.fooddiary.ui.overview
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import de.alekseipopov.fooddiary.data.model.DayRecord
 import de.alekseipopov.fooddiary.domain.DayRecordRepository
+import de.alekseipopov.fooddiary.ui.base.UiState
+import de.alekseipopov.fooddiary.ui.base.toUiState
 import de.alekseipopov.fooddiary.ui.overview.model.OverviewUiEvents
-import de.alekseipopov.fooddiary.ui.overview.model.OverviewUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,26 +19,23 @@ class OverviewViewModel(
     private val repository: DayRecordRepository
 ) : ViewModel() {
 
-    val uiState: StateFlow<OverviewUiState>
+    val uiState: StateFlow<UiState<List<DayRecord>>>
         get() = _uiState.asStateFlow()
-    private var _uiState = MutableStateFlow(OverviewUiState())
+    private var _uiState  = MutableStateFlow<UiState<List<DayRecord>>>(UiState.Loading())
     val uiEvents: StateFlow<OverviewUiEvents?>
         get() = _uiEvents.asStateFlow()
     private var _uiEvents = MutableStateFlow<OverviewUiEvents?>(null)
 
+    init {
+        getRecords()
+    }
+
     fun getRecords() {
-        _uiState.update { state -> state.copy(isLoading = true) }
         viewModelScope.launch(Dispatchers.IO) {
+            _uiState.value = UiState.Loading()
             repository.getRecordsList()
-                .catch { exception ->
-                    _uiState.update { state ->
-                        state.copy(isLoading = false, errorMessage = exception.localizedMessage)
-                    }
-                    Log.e("Exception!", exception.localizedMessage ?: "")
-                }
-                .collect { list ->
-                    _uiState.update { state -> state.copy(isLoading = false, recordList = list) }
-                }
+                .catch { _uiState.value = it.toUiState() }
+                .collect { _uiState.value = it.orEmpty().toUiState() }
         }
     }
 
