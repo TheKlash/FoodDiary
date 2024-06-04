@@ -1,10 +1,10 @@
 package de.alekseipopov.fooddiary.ui.base
 
 sealed class UiState<out T> {
-    class Loading<T>: UiState<T>()
+    class Loading<Nothing>: UiState<Nothing>()
     data class Result<T>(val data: T): UiState<T>()
 
-    data class Error<T>(val throwable: Throwable): UiState<Nothing>()
+    data class Error<Nothing>(val throwable: Throwable): UiState<Nothing>()
 
 }
 

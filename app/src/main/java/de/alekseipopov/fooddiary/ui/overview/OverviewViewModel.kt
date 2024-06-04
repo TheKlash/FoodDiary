@@ -34,7 +34,7 @@ class OverviewViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             _uiState.value = UiState.Loading()
             repository.getRecordsList()
-                .catch { _uiState.value = it.toUiState() }
+                .catch { _uiState.value = UiState.Error(it) }
                 .collect { _uiState.value = it.orEmpty().toUiState() }
         }
     }
