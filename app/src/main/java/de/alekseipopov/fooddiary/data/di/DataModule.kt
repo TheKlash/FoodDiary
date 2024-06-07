@@ -9,7 +9,7 @@ val dataModule = module {
         Room.databaseBuilder(
             context = get(),
             klass = Database::class.java,
-            name = "food_diary_db"
+            name = Database.DATABASE_NAME
         ).build()
     }
 }
