@@ -3,8 +3,7 @@ package de.alekseipopov.fooddiary.ui.details
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import de.alekseipopov.fooddiary.data.model.DayRecord
-import de.alekseipopov.fooddiary.domain.DayRecordRepository
+import de.alekseipopov.fooddiary.data.DayRecordRepository
 import de.alekseipopov.fooddiary.ui.details.model.DetailsUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,20 +20,22 @@ class DetailsViewModel(
         get() = _uiState
     private val _uiState = MutableStateFlow(DetailsUiState())
 
-    fun getRecord(id: String?) {
-        id?.let {
-            _uiState.update { state -> state.copy(isLoading = true) }
-            viewModelScope.launch(Dispatchers.IO) {
-                repository.getRecord(id)
-                    .catch { exception ->
-                        _uiState.update { state -> state.copy(isLoading = false, errorMessage = exception.localizedMessage) }
-                        Log.e("Exception!", exception.localizedMessage ?: "")
+    fun getRecord(id: Int) {
+        _uiState.update { state -> state.copy(isLoading = true) }
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.getDay(id)
+                .catch { exception ->
+                    _uiState.update { state ->
+                        state.copy(
+                            isLoading = false,
+                            errorMessage = exception.localizedMessage
+                        )
                     }
-                    .collect {
-                        _uiState.update { state -> state.copy(isLoading = false, record = it) }
-                    }
-            }
+                    Log.e("Exception!", exception.localizedMessage ?: "")
+                }
+                .collect {
+                    _uiState.update { state -> state.copy(isLoading = false, record = it) }
+                }
         }
     }
-
 }

@@ -1,92 +1,180 @@
 package de.alekseipopov.fooddiary.util
 
-import de.alekseipopov.fooddiary.data.model.DayRecord
+import de.alekseipopov.fooddiary.data.model.Course
+import de.alekseipopov.fooddiary.data.model.Day
 import de.alekseipopov.fooddiary.data.model.Meal
 
 val testRecordList = mutableListOf(
-    DayRecord(
-        id = "0",
-        date = 1704067200L,
+    Day(
+        id = 0,
+        time = 1704067200L,
         meals = listOf(
             Meal(
                 id = 0,
                 time = 1704067740L,
-                title = "Breakfast",
-                courses = listOf("Fired eggs", "Coffee")
+                name = "Breakfast",
+                courses = listOf(
+                    Course(
+                        id = 0,
+                        name = "Fired eggs"
+                    ),
+                    Course(
+                        id = 1,
+                        name = "Coffee"
+                    )
+                )
             ),
             Meal(
                 id = 1,
                 time = 1704068040L,
-                title = "Lunch",
-                courses = listOf("Roastbeef", "Mashed potatoes"),
+                name = "Lunch",
+                courses = listOf(
+                    Course(
+                        id = 0,
+                        name = "Roastbeef"
+                    ),
+                    Course(
+                        id = 1,
+                        name = "Mashed potatoes"
+                    )
+                ),
             ),
             Meal(
                 id = 2,
                 time = 1704068400L,
-                title = "Dinner",
-                courses = listOf("Burger", "Fries", "Coke"),
+                name = "Dinner",
+                courses = listOf(
+                    Course(
+                        id = 0,
+                        name = "Burger"
+                    ),
+                    Course(
+                        id = 1,
+                        name = "Fries"
+                    ),
+                    Course(
+                        id = 2,
+                        name = "Coke"
+                    )
+                ),
             ),
         )
     ),
-    DayRecord(
-        id = "1",
-        date = 1704153600L,
+    Day(
+        id = 1,
+        time = 1704153600L,
         meals = listOf(
             Meal(
                 id = 0,
                 time = 1704178800L,
-                title = "Breakfast",
-                courses = listOf("Tworog mit jam"),
+                name = "Breakfast",
+                courses = listOf(
+                    Course(
+                        id = 0,
+                        name = "Tworog mit jam"
+                    )
+                ),
             ),
             Meal(
                 id = 1,
                 time = 1704193200L,
-                title = "Lunch",
-                courses = listOf("Burger", "Fries", "Coke"),
+                name = "Lunch",
+                courses = listOf(
+                    Course(
+                        id = 0,
+                        name = "Burger"
+                    ),
+                    Course(
+                        id = 1,
+                        name = "Fries"
+                    ),
+                    Course(
+                        id = 2,
+                        name = "Coke"
+                    )
+                ),
             ),
             Meal(
                 id = 2,
                 time = 1704214800L,
-                title = "Poldnik",
-                courses = listOf("Kefir"),
+                name = "Poldnik",
+                courses = listOf(
+                    Course(
+                        id = 0,
+                        name = "Kefir"
+                    )
+                ),
             ),
             Meal(
                 id = 3,
                 time = 1704232800L,
-                title = "Dinner",
-                courses = listOf("Caesar salad"),
+                name = "Dinner",
+                courses = listOf(
+                    Course(
+                        id = 0,
+                        name = "Caesar salad"
+                    )
+                ),
             )
         )
     )
 )
 
-val testRecord = DayRecord(
-    id = "1",
-    date = 1704153600L,
+val testRecord = Day(
+    id = 1,
+    time = 1704153600L,
     meals = listOf(
         Meal(
             id = 0,
             time = 1704178800L,
-            title = "Breakfast",
-            courses = listOf("Tworog mit jam"),
+            name = "Breakfast",
+            courses = listOf(
+                Course(
+                    id = 0,
+                    name = "Tworog mit jam"
+                )
+            ),
         ),
         Meal(
             id = 1,
             time = 1704193200L,
-            title = "Lunch",
-            courses = listOf("Burger", "Fries", "Coke"),
+            name = "Lunch",
+            courses = listOf(
+                Course(
+                    id = 0,
+                    name = "Burger"
+                ),
+                Course(
+                    id = 1,
+                    name = "Fries"
+                ),
+                Course(
+                    id = 2,
+                    name = "Coke"
+                )
+            ),
         ),
         Meal(
             id = 2,
             time = 1704214800L,
-            title = "Poldnik",
-            courses = listOf("Kefir"),
+            name = "Poldnik",
+            courses = listOf(
+                Course(
+                    id = 0,
+                    name = "Kefir"
+                )
+            ),
         ),
         Meal(
             id = 3,
             time = 1704232800L,
-            title = "Dinner",
-            courses = listOf("Caesar salad"),
+            name = "Dinner",
+            courses = listOf(
+                Course(
+                    id = 0,
+                    name = "Caesar salad"
+                )
+            ),
         )
     )
 )
@@ -95,6 +183,23 @@ val testRecord = DayRecord(
 val testMeal = Meal(
     id = 1,
     time = 1704193200L,
-    title = "Lunch",
-    courses = listOf("Burger", "Fries", "Coke", "Суп из тысячи залуп"),
+    name = "Lunch",
+    courses = listOf(
+        Course(
+            id = 0,
+            name = "Burger"
+        ),
+        Course(
+            id = 1,
+            name = "Fries"
+        ),
+        Course(
+            id = 2,
+            name = "Coke"
+        ),
+        Course(
+            id = 3,
+            name = "Суп из тысячи залуп"
+        )
+    ),
 )

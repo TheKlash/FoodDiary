@@ -33,7 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import de.alekseipopov.fooddiary.R
 import de.alekseipopov.fooddiary.ui.theme.FoodDiaryTheme
-import de.alekseipopov.fooddiary.util.unixTimeToDate
+import de.alekseipopov.fooddiary.util.unixTimeToDateFull
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -70,7 +70,7 @@ fun ReportDatePickerDialogContent(
             ) {
                 Text(
                     textAlign = TextAlign.Center,
-                    text = startDatePickerState.selectedDateMillis?.div(1000)?.unixTimeToDate()
+                    text = startDatePickerState.selectedDateMillis?.div(1000)?.unixTimeToDateFull()
                         ?: stringResource(R.string.report_select_start_date)
                 )
             }
@@ -85,7 +85,7 @@ fun ReportDatePickerDialogContent(
             ) {
                 Text(
                     textAlign = TextAlign.Center,
-                    text = endDatePickerState.selectedDateMillis?.div(1000)?.unixTimeToDate()
+                    text = endDatePickerState.selectedDateMillis?.div(1000)?.unixTimeToDateFull()
                         ?: stringResource(R.string.report_select_end_date)
                 )
             }

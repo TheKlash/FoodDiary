@@ -5,9 +5,9 @@ import androidx.room.RoomDatabase
 import de.alekseipopov.fooddiary.data.db.dao.CourseDao
 import de.alekseipopov.fooddiary.data.db.dao.DayRecordDao
 import de.alekseipopov.fooddiary.data.db.dao.MealDao
-import de.alekseipopov.fooddiary.data.db.entity.CourseEntity
-import de.alekseipopov.fooddiary.data.db.entity.DayRecordEntity
-import de.alekseipopov.fooddiary.data.db.entity.MealEntity
+import de.alekseipopov.fooddiary.data.model.entity.CourseEntity
+import de.alekseipopov.fooddiary.data.model.entity.DayRecordEntity
+import de.alekseipopov.fooddiary.data.model.entity.MealEntity
 
 @Database(entities = [DayRecordEntity::class, MealEntity::class, CourseEntity::class], version = 1)
 abstract class Database: RoomDatabase() {

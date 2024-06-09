@@ -27,14 +27,14 @@ import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import de.alekseipopov.fooddiary.R
-import de.alekseipopov.fooddiary.data.model.DayRecord
+import de.alekseipopov.fooddiary.data.model.Day
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailsScreen(
     onBackPressed: () -> Unit,
-    recordId: String
+    recordId: Int
 ) {
 
     val viewModel: DetailsViewModel = koinViewModel()
@@ -88,7 +88,7 @@ fun DetailsScreen(
 }
 
 @Composable
-fun DetailsScreenContent(modifier: Modifier, record: DayRecord) {
+fun DetailsScreenContent(modifier: Modifier, record: Day) {
     LazyColumn(modifier = modifier) {
         items(1) {
             DayDetailsItem(record)

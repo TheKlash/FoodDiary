@@ -3,7 +3,7 @@ package de.alekseipopov.fooddiary.ui.overview
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import de.alekseipopov.fooddiary.domain.DayRecordRepository
+import de.alekseipopov.fooddiary.data.DayRecordRepository
 import de.alekseipopov.fooddiary.ui.overview.model.OverviewUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,7 +24,7 @@ class OverviewViewModel(
     fun getRecords() {
         _uiState.update { state -> state.copy(isLoading = true) }
         viewModelScope.launch(Dispatchers.IO) {
-            repository.getRecordsList()
+            repository.getDayRecords()
                 .catch { exception ->
                     _uiState.update { state ->
                         state.copy(isLoading = false, errorMessage = exception.localizedMessage)

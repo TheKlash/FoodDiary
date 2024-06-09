@@ -5,7 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import de.alekseipopov.fooddiary.data.db.entity.CourseEntity
+import de.alekseipopov.fooddiary.data.model.entity.CourseEntity
 
 @Dao
 interface CourseDao {

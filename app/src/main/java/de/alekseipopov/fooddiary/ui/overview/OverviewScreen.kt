@@ -37,17 +37,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import de.alekseipopov.fooddiary.R
-import de.alekseipopov.fooddiary.data.model.DayRecord
+import de.alekseipopov.fooddiary.data.model.Day
 import de.alekseipopov.fooddiary.ui.theme.FoodDiaryTheme
 import de.alekseipopov.fooddiary.util.testRecord
 import de.alekseipopov.fooddiary.util.testRecordList
-import de.alekseipopov.fooddiary.util.unixTimeToDate
 import org.koin.androidx.compose.koinViewModel
 
 @ExperimentalMaterial3Api
 @Composable
 fun OverviewScreen(
-    navigateToDetails: (String?) -> Unit,
+    navigateToDetails: (Int?) -> Unit,
     navigateToReport: (Long?, Long?) -> Unit
 ) {
 
@@ -127,8 +126,8 @@ fun OverviewScreen(
 @Composable
 fun OverviewScreenContent(
     modifier : Modifier,
-    recordsList: List<DayRecord>?,
-    onDayRecordSelected: (String?) -> Unit
+    recordsList: List<Day>?,
+    onDayRecordSelected: (Int?) -> Unit
 ) {
     Box(
         modifier = modifier
@@ -147,7 +146,7 @@ fun OverviewScreenContent(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable { onDayRecordSelected(it.id) },
-                            dayRecord = it,
+                            day = it,
                         )
                     }
                 )
@@ -159,7 +158,7 @@ fun OverviewScreenContent(
 @Composable
 fun DayRecordListItem(
     modifier: Modifier,
-    dayRecord: DayRecord,
+    day: Day,
 ) {
     Card(modifier = modifier) {
         Box(
@@ -168,7 +167,7 @@ fun DayRecordListItem(
                 .padding(horizontal = 12.dp, vertical = 8.dp)
         ) {
             Text(
-                text = dayRecord.date.unixTimeToDate(),
+                text = day.fullTime,
                 fontSize = 24.sp
             )
         }
@@ -181,7 +180,7 @@ fun DayRecordListItemPreview() {
     FoodDiaryTheme {
         DayRecordListItem(
             modifier = Modifier.fillMaxSize(),
-            dayRecord = testRecord
+            day = testRecord
         )
     }
 }
