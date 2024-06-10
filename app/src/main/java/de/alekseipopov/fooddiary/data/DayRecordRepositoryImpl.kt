@@ -28,4 +28,13 @@ class DayRecordRepositoryImpl(
             }
             .distinctUntilChanged()
             .flowOn(Dispatchers.IO)
+
+    override suspend fun getReport(startDate: Long, endDate: Long): Flow<List<Day>> =
+        database.dayRecordDao()
+            .getDayRecordWithMeals(startDate, endDate)
+            .map {
+                it.toDayList()
+            }
+            .distinctUntilChanged()
+            .flowOn(Dispatchers.IO)
 }

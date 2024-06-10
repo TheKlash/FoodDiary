@@ -24,9 +24,9 @@ class ReportScreenViewModel(
     private val _reportRecords = MutableStateFlow(ReportUiModel())
 
     fun getReport(startDate: Long, endDate: Long) {
-        /* _reportRecords.update { state -> state.copy(isLoading = true) }
+         _reportRecords.update { state -> state.copy(isLoading = true) }
         viewModelScope.launch(Dispatchers.IO) {
-            repository.getRecordsPeriod(startDate, endDate)
+            repository.getReport(startDate, endDate)
                 .catch { e ->
                     _reportRecords.update { state -> state.copy(isLoading = false, errorMessage = e.localizedMessage) }
                     Log.e("Exception", e.localizedMessage ?: "")
@@ -40,7 +40,7 @@ class ReportScreenViewModel(
                     )
                     _reportRecords.update { state -> state.copy(isLoading = false, report = report) }
                 }
-        } */
+        }
     }
 
 }

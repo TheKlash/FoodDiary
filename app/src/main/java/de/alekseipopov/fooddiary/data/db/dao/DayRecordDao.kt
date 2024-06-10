@@ -20,6 +20,10 @@ interface DayRecordDao {
     @Query("SELECT * FROM dayrecordentity WHERE id = :id")
     fun getDayRecordWithMeals(id: Int): Flow<DayRecordWithMealsAndCourses>
 
+    @Transaction
+    @Query("SELECT * FROM dayrecordentity WHERE date BETWEEN :startDate AND :endDate")
+    fun getDayRecordWithMeals(startDate: Long, endDate: Long): Flow<List<DayRecordWithMealsAndCourses>>
+
     @Insert
     suspend fun insert(dayRecord: DayRecordEntity)
 
