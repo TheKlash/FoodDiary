@@ -21,6 +21,10 @@ class OverviewViewModel(
         get() = _uiState.asStateFlow()
     private var _uiState = MutableStateFlow(OverviewUiState())
 
+    init {
+        getRecords()
+    }
+
     fun getRecords() {
         _uiState.update { state -> state.copy(isLoading = true) }
         viewModelScope.launch(Dispatchers.IO) {

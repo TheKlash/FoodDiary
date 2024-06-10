@@ -51,9 +51,7 @@ fun ReportScreen(
         uiState.report?.endDateString ?: ""
     )
 
-    LaunchedEffect(uiState) {
-        viewModel.getReport(startDate, endDate)
-    }
+    viewModel.getReport(startDate, endDate)
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),

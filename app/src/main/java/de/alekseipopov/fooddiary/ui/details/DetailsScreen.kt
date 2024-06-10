@@ -39,7 +39,7 @@ fun DetailsScreen(
 
     val viewModel: DetailsViewModel = koinViewModel()
     val uiState = viewModel.uiState.collectAsState().value
-    LaunchedEffect(key1 = uiState) { viewModel.getRecord(recordId) }
+    viewModel.getRecord(recordId)
 
     Scaffold(
         topBar = {

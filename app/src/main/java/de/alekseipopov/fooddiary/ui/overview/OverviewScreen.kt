@@ -53,10 +53,6 @@ fun OverviewScreen(
     val viewModel: OverviewViewModel = koinViewModel()
     val uiState = viewModel.uiState.collectAsState().value
 
-    LaunchedEffect(key1 = uiState) {
-        viewModel.getRecords()
-    }
-
     Scaffold(
         topBar = {
             TopAppBar(
