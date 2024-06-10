@@ -12,20 +12,21 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface DayRecordDao {
+    @Transaction
     @Query("SELECT * FROM dayrecordentity")
-    suspend fun getAll(): Flow<List<DayRecordWithMealsAndCourses>>
+    fun getAll(): Flow<List<DayRecordWithMealsAndCourses>>
 
     @Transaction
-    @Query("SELECT * FROM dayrecordentity WHERE id = id")
-    suspend fun getDayRecordWithMeals(id: Int): Flow<DayRecordWithMealsAndCourses>
+    @Query("SELECT * FROM dayrecordentity WHERE id = :id")
+    fun getDayRecordWithMeals(id: Int): Flow<DayRecordWithMealsAndCourses>
 
     @Insert
-    suspend fun insert(dayRecord: DayRecordEntity): Boolean
+    suspend fun insert(dayRecord: DayRecordEntity)
 
     @Update
-    suspend fun update(dayRecord: DayRecordEntity): Boolean
+    suspend fun update(dayRecord: DayRecordEntity)
 
     @Delete
-    suspend fun delete(dayRecord: DayRecordEntity): Boolean
+    suspend fun delete(dayRecord: DayRecordEntity)
 
 }

@@ -10,17 +10,17 @@ import de.alekseipopov.fooddiary.data.model.entity.CourseEntity
 @Dao
 interface CourseDao {
     @Query("SELECT * FROM courseentity WHERE meal_id = :mealId")
-    suspend fun selectByMealId(mealId: Int): List<CourseEntity>
+    fun selectByMealId(mealId: Int): List<CourseEntity>
 
     @Query("SELECT * FROM courseentity")
-    suspend fun getAll(): List<CourseEntity>
+    fun getAll(): List<CourseEntity>
 
     @Insert
-    suspend fun insert(course: CourseEntity): Boolean
+    suspend fun insert(course: CourseEntity)
 
     @Update
-    suspend fun update(course: CourseEntity): Boolean
+    suspend fun update(course: CourseEntity)
 
     @Delete
-    suspend fun delete(course: CourseEntity): Boolean
+    suspend fun delete(course: CourseEntity)
 }
