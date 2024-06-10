@@ -50,7 +50,7 @@ fun Navigation(navController: NavHostController) {
             )
         }
         composable(route = "details/{recordId}") {
-            val recordId = it.arguments?.getInt("recordId") ?: -1
+            val recordId = it.arguments?.getString("recordId")?.toInt() ?: -1
             DetailsScreen(
                 onBackPressed = { navController.popBackStack() },
                 recordId = recordId
