@@ -8,11 +8,14 @@ import org.koin.dsl.module
 
 val dataModule = module {
     single<Database> {
-        Room.databaseBuilder(
-            context = get(),
-            klass = Database::class.java,
-            name = Database.DATABASE_NAME
-        ).build()
+        Room
+            .databaseBuilder(
+                context = get(),
+                klass = Database::class.java,
+                name = Database.DATABASE_NAME
+            )
+            .createFromAsset("${Database.DATABASE_NAME}.db")
+            .build()
     }
 
     single<DayRecordRepository> {
