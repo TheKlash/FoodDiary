@@ -3,6 +3,7 @@ package de.alekseipopov.fooddiary.ui.details
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import de.alekseipopov.fooddiary.data.DayRecordRepository
 import de.alekseipopov.fooddiary.data.model.DayRecord
 import de.alekseipopov.fooddiary.domain.DayRecordRepository
 import de.alekseipopov.fooddiary.ui.details.model.DetailsUiEvents
@@ -31,7 +32,7 @@ class DetailsViewModel(
         id?.let {
             _uiState.update { state -> state.copy(isLoading = true) }
             viewModelScope.launch(Dispatchers.IO) {
-                repository.getRecord(id)
+                repository.getDay(id)
                     .catch { exception ->
                         _uiState.update { state -> state.copy(isLoading = false, errorMessage = exception.localizedMessage) }
                         Log.e("Exception!", exception.localizedMessage ?: "")

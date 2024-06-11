@@ -41,14 +41,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import de.alekseipopov.fooddiary.R
-import de.alekseipopov.fooddiary.data.model.DayRecord
+import de.alekseipopov.fooddiary.data.model.Day
 import de.alekseipopov.fooddiary.ui.base.UiState
 import de.alekseipopov.fooddiary.ui.details.EditDayDialogContent
 import de.alekseipopov.fooddiary.ui.overview.model.OverviewUiEvents
 import de.alekseipopov.fooddiary.ui.theme.FoodDiaryTheme
 import de.alekseipopov.fooddiary.util.testRecord
 import de.alekseipopov.fooddiary.util.testRecordList
-import de.alekseipopov.fooddiary.util.unixTimeToDate
 import org.koin.androidx.compose.koinViewModel
 
 @ExperimentalMaterial3Api
@@ -256,9 +255,9 @@ private fun DayRecordList(
 }
 
 @Composable
-private fun DayRecordListItem(
-    modifier: Modifier = Modifier,
-    dayRecord: DayRecord,
+fun DayRecordListItem(
+    modifier: Modifier,
+    day: Day
 ) {
     Card(modifier = modifier) {
         Box(
@@ -267,7 +266,7 @@ private fun DayRecordListItem(
                 .padding(horizontal = 12.dp, vertical = 8.dp)
         ) {
             Text(
-                text = dayRecord.date.unixTimeToDate(),
+                text = day.fullTime,
                 fontSize = 24.sp
             )
         }
@@ -290,9 +289,9 @@ private fun DayRecordListItemPreview() {
     FoodDiaryTheme {
         DayRecordListItem(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .wrapContentHeight(),
-            dayRecord = testRecord
+            day = testRecord
         )
     }
 }

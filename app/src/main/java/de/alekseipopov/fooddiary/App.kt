@@ -1,7 +1,7 @@
 package de.alekseipopov.fooddiary
 
 import android.app.Application
-import de.alekseipopov.fooddiary.domain.di.domainModule
+import de.alekseipopov.fooddiary.data.di.dataModule
 import de.alekseipopov.fooddiary.ui.details.di.detailsModule
 import de.alekseipopov.fooddiary.ui.overview.di.overviewModule
 import de.alekseipopov.fooddiary.ui.report.di.reportModule
@@ -14,7 +14,7 @@ class App: Application() {
         startKoin {
             androidContext(this@App)
             modules(
-                domainModule,
+                dataModule,
                 overviewModule,
                 detailsModule,
                 reportModule

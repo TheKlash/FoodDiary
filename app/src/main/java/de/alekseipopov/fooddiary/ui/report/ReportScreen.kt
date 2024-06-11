@@ -31,7 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import de.alekseipopov.fooddiary.R
-import de.alekseipopov.fooddiary.data.model.DayRecord
+import de.alekseipopov.fooddiary.data.model.Day
 import de.alekseipopov.fooddiary.ui.details.DayDetailsItem
 import de.alekseipopov.fooddiary.ui.theme.FoodDiaryTheme
 import de.alekseipopov.fooddiary.util.testRecordList
@@ -53,9 +53,7 @@ fun ReportScreen(
         uiState.report?.endDateString ?: ""
     )
 
-    LaunchedEffect(uiState) {
-        viewModel.getReport(startDate, endDate)
-    }
+    viewModel.getReport(startDate, endDate)
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -93,7 +91,7 @@ fun ReportScreen(
 }
 
 @Composable
-fun ReportScreenContent(modifier: Modifier = Modifier, records: List<DayRecord>) {
+fun ReportScreenContent(modifier: Modifier = Modifier, records: List<Day>) {
     LazyColumn(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(32.dp)

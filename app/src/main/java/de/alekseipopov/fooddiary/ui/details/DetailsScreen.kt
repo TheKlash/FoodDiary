@@ -29,23 +29,20 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
-import de.alekseipopov.fooddiary.data.model.DayRecord
-import de.alekseipopov.fooddiary.ui.details.model.DetailsUiEvents
-import de.alekseipopov.fooddiary.util.testRecord
-import de.alekseipopov.fooddiary.util.unixTimeToDate
+import de.alekseipopov.fooddiary.R
+import de.alekseipopov.fooddiary.data.model.Day
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailsScreen(
     onBackPressed: () -> Unit,
-    recordId: String
+    recordId: Int
 ) {
     val viewModel: DetailsViewModel = koinViewModel()
     val uiState = viewModel.uiState.collectAsState().value
     val uiEvents = viewModel.uiEvents.collectAsState(null).value
-    LaunchedEffect(key1 = uiState) { viewModel.getRecord(recordId) }
+    viewModel.getRecord(recordId)
 
     Scaffold(
         topBar = {
@@ -125,7 +122,7 @@ fun DetailsScreen(
 }
 
 @Composable
-fun DetailsScreenContent(modifier: Modifier, record: DayRecord) {
+fun DetailsScreenContent(modifier: Modifier, record: Day) {
     LazyColumn(modifier = modifier) {
         items(1) {
             DayDetailsItem(record)

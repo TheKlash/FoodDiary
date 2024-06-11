@@ -20,25 +20,25 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import de.alekseipopov.fooddiary.R
-import de.alekseipopov.fooddiary.data.model.DayRecord
+import de.alekseipopov.fooddiary.data.model.Day
 import de.alekseipopov.fooddiary.data.model.Meal
 import de.alekseipopov.fooddiary.ui.theme.FoodDiaryTheme
 import de.alekseipopov.fooddiary.util.testRecord
-import de.alekseipopov.fooddiary.util.unixTimeToDate
-import de.alekseipopov.fooddiary.util.unixTimeToTime
+import de.alekseipopov.fooddiary.util.unixTimeToDateFull
+import de.alekseipopov.fooddiary.util.unixTimeToDateHhMm
 
 @Composable
 fun DayDetailsItem(
-    dayRecord: DayRecord?
+    day: Day?
 ) {
     Column {
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             stringResource(
-                R.string.details_item_meal_counter, dayRecord?.meals?.size ?: 0
+                R.string.details_item_meal_counter, day?.meals?.size ?: 0
             )
         )
-        dayRecord?.meals?.forEach {
+        day?.meals?.forEach {
             Spacer(modifier = Modifier.height(8.dp))
             MealListItem(meal = it)
         }
@@ -67,13 +67,13 @@ fun MealListItem(
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
                     fontSize = 20.sp,
-                    text = meal.title,
+                    text = meal.name,
                 )
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
                     fontSize = 20.sp,
-                    text = meal.time.unixTimeToTime() ?: ""
+                    text = meal.time.unixTimeToDateHhMm() ?: ""
                 )
             }
             Column(
@@ -85,7 +85,7 @@ fun MealListItem(
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center,
                         fontSize = 16.sp,
-                        text = it
+                        text = it.name
                     )
                 }
             }
@@ -98,7 +98,7 @@ fun MealListItem(
 fun DayDetailsItemPreview() {
     FoodDiaryTheme {
         Surface {
-            DayDetailsItem(dayRecord = testRecord)
+            DayDetailsItem(day = testRecord)
         }
     }
 }
