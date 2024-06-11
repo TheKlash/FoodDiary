@@ -20,7 +20,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -35,7 +34,6 @@ import de.alekseipopov.fooddiary.data.model.Day
 import de.alekseipopov.fooddiary.ui.details.DayDetailsItem
 import de.alekseipopov.fooddiary.ui.theme.FoodDiaryTheme
 import de.alekseipopov.fooddiary.util.testRecordList
-import de.alekseipopov.fooddiary.util.unixTimeToDate
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -101,9 +99,9 @@ fun ReportScreenContent(modifier: Modifier = Modifier, records: List<Day>) {
             itemContent = {
                 Text(
                     fontSize = 24.sp,
-                    text = it.date.unixTimeToDate()
+                    text = it.fullTime
                 )
-                DayDetailsItem(dayRecord = it)
+                DayDetailsItem(day = it)
                 Spacer(Modifier.height(24.dp))
             }
         )

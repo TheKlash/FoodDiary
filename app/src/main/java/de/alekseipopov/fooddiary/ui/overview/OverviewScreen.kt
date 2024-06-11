@@ -78,7 +78,7 @@ fun OverviewScreen(
                     is UiState.Loading -> { StateLoading() }
                     is UiState.Result<*> -> {
                         StateResult (
-                            dayRecords = (uiState as UiState.Result<List<DayRecord>>).data,
+                            dayRecords = (uiState as UiState.Result<List<Day>>).data,
                             onDayRecordSelected = { id ->
                                 navigateToDetails(id)
                             }
@@ -153,7 +153,7 @@ private fun StateLoading() {
 
 @Composable
 private fun StateResult(
-    dayRecords: List<DayRecord>,
+    dayRecords: List<Day>,
     onDayRecordSelected: (String?) -> Unit = { }
 ) {
     Column(
@@ -229,7 +229,7 @@ private fun Fab(
 
 @Composable
 private fun DayRecordList(
-    recordsList: List<DayRecord>?,
+    recordsList: List<Day>?,
     onDayRecordSelected: (String?) -> Unit = { }
 ) {
     recordsList?.let {
@@ -245,8 +245,8 @@ private fun DayRecordList(
                     DayRecordListItem(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable { onDayRecordSelected(it.id) },
-                        dayRecord = it,
+                            .clickable { onDayRecordSelected(it.id.toString()) },
+                        day = it,
                     )
                 }
             )

@@ -21,7 +21,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -29,8 +28,10 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import de.alekseipopov.fooddiary.R
+import androidx.compose.ui.window.Dialog
 import de.alekseipopov.fooddiary.data.model.Day
+import de.alekseipopov.fooddiary.ui.details.model.DetailsUiEvents
+import de.alekseipopov.fooddiary.util.testRecord
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -42,7 +43,7 @@ fun DetailsScreen(
     val viewModel: DetailsViewModel = koinViewModel()
     val uiState = viewModel.uiState.collectAsState().value
     val uiEvents = viewModel.uiEvents.collectAsState(null).value
-    viewModel.getRecord(recordId)
+    viewModel.getDay(recordId)
 
     Scaffold(
         topBar = {
@@ -63,7 +64,7 @@ fun DetailsScreen(
                     }
                 },
                 title = {
-                    Text(text = uiState.record?.date?.unixTimeToDate() ?: "")
+                    Text(text = uiState.record?.fullTime ?: "")
                 },
                 actions = {
                     IconButton(onClick = { viewModel.showEditEntryDialog() }) {
@@ -106,7 +107,7 @@ fun DetailsScreen(
             ) {
                 Surface {
                     EditDayDialogContent(
-                        currentDay = (uiState.record?.date ?: 0) * 1000,
+                        currentDay = (uiState.record?.time ?: 0) * 1000,
                         onConfirm = {
                                     // TODO: call ViewModel to update date
                             },

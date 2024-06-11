@@ -28,7 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import de.alekseipopov.fooddiary.R
-import de.alekseipopov.fooddiary.util.unixTimeToDate
+import de.alekseipopov.fooddiary.util.unixTimeToDateFull
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,7 +37,7 @@ fun EditDayDialogContent(
     onConfirm: (Long) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    var datePickerState = rememberDatePickerState(
+    val datePickerState = rememberDatePickerState(
         initialSelectedDateMillis = currentDay ?: (System.currentTimeMillis())
     )
     var showDatePickerDialog by remember { mutableStateOf(false) }
@@ -76,7 +76,7 @@ fun EditDayDialogContent(
             } else {
                 Text(
                     textAlign = TextAlign.Center,
-                    text = selectedTimeMillis?.div(1000)?.unixTimeToDate() ?: ""
+                    text = selectedTimeMillis?.div(1000)?.unixTimeToDateFull() ?: ""
                 )
             }
         }

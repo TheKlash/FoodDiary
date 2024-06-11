@@ -4,8 +4,6 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.alekseipopov.fooddiary.data.DayRecordRepository
-import de.alekseipopov.fooddiary.data.model.DayRecord
-import de.alekseipopov.fooddiary.domain.DayRecordRepository
 import de.alekseipopov.fooddiary.ui.details.model.DetailsUiEvents
 import de.alekseipopov.fooddiary.ui.details.model.DetailsUiState
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +16,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class DetailsViewModel(
-    val repository: DayRecordRepository
+    private val repository: DayRecordRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(DetailsUiState())
@@ -28,20 +26,24 @@ class DetailsViewModel(
     private val _uiEvents = Channel<DetailsUiEvents>()
     val uiEvents = _uiEvents.receiveAsFlow()
 
-    fun getRecord(id: String?) {
-        id?.let {
-            _uiState.update { state -> state.copy(isLoading = true) }
-            viewModelScope.launch(Dispatchers.IO) {
-                repository.getDay(id)
-                    .catch { exception ->
-                        _uiState.update { state -> state.copy(isLoading = false, errorMessage = exception.localizedMessage) }
-                        Log.e("Exception!", exception.localizedMessage ?: "")
+    fun getDay(id: Int) {
+        _uiState.update { state -> state.copy(isLoading = true) }
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.getDay(id)
+                .catch { exception ->
+                    _uiState.update { state ->
+                        state.copy(
+                            isLoading = false,
+                            errorMessage = exception.localizedMessage
+                        )
                     }
-                    .collect {
-                        _uiState.update { state -> state.copy(isLoading = false, record = it) }
-                    }
-            }
+                    Log.e("Exception!", exception.localizedMessage ?: "")
+                }
+                .collect {
+                    _uiState.update { state -> state.copy(isLoading = false, record = it) }
+                }
         }
+
     }
 
     fun showEditEntryDialog() {
