@@ -21,7 +21,7 @@ class OverviewViewModel(
 
     val uiState: StateFlow<UiState<List<Day>>>
         get() = _uiState.asStateFlow()
-    private var _uiState  = MutableStateFlow<UiState<List<Day>>>(UiState.Loading())
+    private var _uiState = MutableStateFlow<UiState<List<Day>>>(UiState.Loading())
     val uiEvents: StateFlow<OverviewUiEvents?>
         get() = _uiEvents.asStateFlow()
     private var _uiEvents = MutableStateFlow<OverviewUiEvents?>(null)
@@ -31,11 +31,18 @@ class OverviewViewModel(
     }
 
     fun getRecords() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.Main) {
             _uiState.value = UiState.Loading()
             repository.getDayRecords()
                 .catch { _uiState.value = UiState.Error(it) }
                 .collect { _uiState.value = it.toUiState() }
+        }
+    }
+
+    fun createNewDay(date: Long) {
+        viewModelScope.launch(Dispatchers.Main) {
+            val newDayId = repository.createNewDay(date / 1000)
+            _uiEvents.value = OverviewUiEvents.ShowNewDay(newDayId)
         }
     }
 

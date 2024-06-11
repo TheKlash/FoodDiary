@@ -22,6 +22,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -41,8 +42,8 @@ fun DetailsScreen(
     recordId: Int
 ) {
     val viewModel: DetailsViewModel = koinViewModel()
-    val uiState = viewModel.uiState.collectAsState().value
-    val uiEvents = viewModel.uiEvents.collectAsState(null).value
+    val uiState by viewModel.uiState.collectAsState()
+    val uiEvents by viewModel.uiEvents.collectAsState(null)
     viewModel.getDay(recordId)
 
     Scaffold(

@@ -58,7 +58,7 @@ fun OverviewScreen(
 ) {
     val viewModel: OverviewViewModel = koinViewModel()
     val uiState by viewModel.uiState.collectAsState()
-    val uiEvents = viewModel.uiEvents.collectAsState().value
+    val uiEvents by viewModel.uiEvents.collectAsState()
 
     Scaffold(
         topBar = { TopBar() },
@@ -75,17 +75,21 @@ fun OverviewScreen(
                     .padding(top = paddingValues.calculateTopPadding())
             ) {
                 when (uiState) {
-                    is UiState.Loading -> { StateLoading() }
+                    is UiState.Loading -> {
+                        StateLoading()
+                    }
+
                     is UiState.Result<*> -> {
-                        StateResult (
+                        StateResult(
                             dayRecords = (uiState as UiState.Result<List<Day>>).data,
                             onDayRecordSelected = { id ->
                                 navigateToDetails(id)
                             }
                         )
                     }
+
                     is UiState.Error<*> -> {
-                        StateError (
+                        StateError(
                             throwable = (uiState as UiState.Error<*>).throwable,
                             onRetryPressed = { viewModel.getRecords() }
                         )
@@ -95,14 +99,15 @@ fun OverviewScreen(
         }
     )
 
-    OverviewObserveUiEvents(uiEvents, viewModel, navigateToReport)
+    OverviewObserveUiEvents(uiEvents, viewModel, navigateToReport, navigateToDetails)
 }
 
 @Composable
 private fun OverviewObserveUiEvents(
     events: OverviewUiEvents?,
     viewModel: OverviewViewModel,
-    navigateToReport: (Long?, Long?) -> Unit
+    navigateToReport: (Long?, Long?) -> Unit,
+    navigateToDetails: (String?) -> Unit
 ) {
     when (events) {
         is OverviewUiEvents.ShowReportDatePickerDialog -> {
@@ -123,13 +128,17 @@ private fun OverviewObserveUiEvents(
                 Surface {
                     EditDayDialogContent(
                         onConfirm = {
-                            //TODO: call ViewModel to create new record
-                            viewModel.hideNewEntryDialog()
+                            viewModel.createNewDay(it)
                         },
                         onDismiss = { viewModel.hideNewEntryDialog() }
                     )
                 }
             }
+        }
+
+        is OverviewUiEvents.ShowNewDay -> {
+            navigateToDetails((events as OverviewUiEvents.ShowNewDay).id.toString())
+            viewModel.hideNewEntryDialog()
         }
 
         else -> {}
@@ -178,7 +187,8 @@ private fun StateError(
         Button(onClick = onRetryPressed) {
             Text(
                 textAlign = TextAlign.Center,
-                text = "Error! ${throwable.localizedMessage} Please try again!")
+                text = "Error! ${throwable.localizedMessage} Please try again!"
+            )
         }
     }
 }
@@ -316,6 +326,7 @@ private fun OverviewScreenPreview_Result() {
         }
     }
 }
+
 @Composable
 @Preview
 private fun OverviewScreenPreview_Error() {

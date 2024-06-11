@@ -1,7 +1,9 @@
 package de.alekseipopov.fooddiary.data
 
+import android.provider.SyncStateContract.Helpers.insert
 import de.alekseipopov.fooddiary.data.db.Database
 import de.alekseipopov.fooddiary.data.model.Day
+import de.alekseipopov.fooddiary.data.model.entity.DayRecordEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -37,4 +39,9 @@ class DayRecordRepositoryImpl(
             }
             .distinctUntilChanged()
             .flowOn(Dispatchers.IO)
+
+    override suspend fun createNewDay(date: Long): Long {
+        val newDay = DayRecordEntity(id = 0, date = date)
+        return database.dayRecordDao().insert(newDay)
+    }
 }
