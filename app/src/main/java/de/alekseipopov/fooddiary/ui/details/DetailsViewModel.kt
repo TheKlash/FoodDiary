@@ -28,7 +28,7 @@ class DetailsViewModel(
 
     fun getDay(id: Int) {
         _uiState.update { state -> state.copy(isLoading = true) }
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.Main) {
             repository.getDay(id)
                 .catch { exception ->
                     _uiState.update { state ->
@@ -44,6 +44,17 @@ class DetailsViewModel(
                 }
         }
 
+    }
+
+    fun updateDate(time: Long) {
+        viewModelScope.launch(Dispatchers.Main) {
+            val day = _uiState.value.record
+            day?.let {
+                it.time = time
+                repository.updateDay(it)
+                getDay(it.id)
+            }
+        }
     }
 
     fun showEditEntryDialog() {

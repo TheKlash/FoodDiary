@@ -8,4 +8,5 @@ interface DayRecordRepository {
     suspend fun getDay(id: Int): Flow<Day>
     suspend fun getReport(startDate: Long, endDate: Long): Flow<List<Day>>
     suspend fun createNewDay(date: Long): Long
+    suspend fun updateDay(day: Day)
 }

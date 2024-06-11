@@ -44,4 +44,8 @@ class DayRecordRepositoryImpl(
         val newDay = DayRecordEntity(id = 0, date = date)
         return database.dayRecordDao().insert(newDay)
     }
+
+    override suspend fun updateDay(day: Day) {
+        database.dayRecordDao().update(day.toDayRecordEntity())
+    }
 }

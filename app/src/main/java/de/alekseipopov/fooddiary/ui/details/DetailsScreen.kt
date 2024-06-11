@@ -80,10 +80,12 @@ fun DetailsScreen(
         },
         content = { paddingValues ->
             if (uiState.isLoading) {
-                Box(modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = paddingValues.calculateTopPadding())
-                    .padding(8.dp)) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = paddingValues.calculateTopPadding())
+                        .padding(8.dp)
+                ) {
                     CircularProgressIndicator()
                 }
             } else {
@@ -108,17 +110,19 @@ fun DetailsScreen(
             ) {
                 Surface {
                     EditDayDialogContent(
-                        currentDay = (uiState.record?.time ?: 0) * 1000,
+                        currentDay = uiState.record?.time ?: 0,
                         onConfirm = {
-                                    // TODO: call ViewModel to update date
-                            },
+                            viewModel.updateDate(it/1000)
+                            viewModel.hideEditEntryDialog()
+                        },
                         onDismiss = { viewModel.hideEditEntryDialog() }
                     )
                 }
             }
 
         }
-        else -> { }
+
+        else -> {}
     }
 
 }
