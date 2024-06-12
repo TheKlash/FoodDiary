@@ -94,9 +94,9 @@ fun ReportDatePickerDialogContent(
                 DatePicker(
                     modifier = Modifier.wrapContentSize(),
                     state = startDatePickerState,
-                    dateValidator = { date ->
-                        date < (endDatePickerState.selectedDateMillis ?: System.currentTimeMillis())
-                    }
+                    //dateValidator = { date ->
+                       // date < (endDatePickerState.selectedDateMillis ?: System.currentTimeMillis())
+                    //}
                 )
                 Button(
                     modifier = Modifier.align(Alignment.End),
@@ -110,9 +110,9 @@ fun ReportDatePickerDialogContent(
                 DatePicker(
                     modifier = Modifier.wrapContentSize(),
                     state = endDatePickerState,
-                    dateValidator = { date ->
-                        date > (startDatePickerState.selectedDateMillis ?: 0L) && date <= System.currentTimeMillis()
-                    }
+                    //dateValidator = { date ->
+                      //  date > (startDatePickerState.selectedDateMillis ?: 0L) && date <= System.currentTimeMillis()
+                    //}
                 )
                 Button(
                     modifier = Modifier.align(Alignment.End),
@@ -162,7 +162,7 @@ fun ReportDatePickerDialogContentPreview() {
     FoodDiaryTheme {
         Surface {
             ReportDatePickerDialogContent(
-                onConfirm = { start, end -> },
+                onConfirm = {_, _ -> },
                 onDismiss = { }
             )
         }

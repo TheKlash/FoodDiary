@@ -83,7 +83,7 @@ class DetailsViewModel(
         }
     }
 
-    fun showDeleteDialog(id: Int) {
+    fun showDeleteDialog() {
         viewModelScope.launch(Dispatchers.Main) {
             _uiEvents.send(DetailsUiEvents.ShowDeleteDialog())
         }

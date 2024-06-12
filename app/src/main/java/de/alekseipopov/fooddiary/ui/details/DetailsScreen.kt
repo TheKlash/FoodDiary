@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.CircularProgressIndicator
@@ -39,110 +39,87 @@ import org.koin.androidx.compose.koinViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailsScreen(
-    onBackPressed: () -> Unit,
-    recordId: Int
+    onBackPressed: () -> Unit, recordId: Int
 ) {
     val viewModel: DetailsViewModel = koinViewModel()
     val uiState by viewModel.uiState.collectAsState()
     val uiEvents by viewModel.uiEvents.collectAsState(null)
     viewModel.getDay(recordId)
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
-                ),
-                navigationIcon = {
-                    IconButton(
-                        onClick = { onBackPressed() }
-                    ) {
-                        Image(
-                            imageVector = Icons.Filled.ArrowBack,
-                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
-                            contentDescription = null
-                        )
-                    }
-                },
-                title = {
-                    Text(text = uiState.record?.fullTime ?: "")
-                },
-                actions = {
-                    IconButton(onClick = { viewModel.showEditEntryDialog() }) {
-                        Image(
-                            imageVector = Icons.Filled.Edit,
-                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
-                            contentDescription = null
-                        )
-                    }
-                    IconButton(onClick = {
-                        uiState.record?.id?.let {
-                            viewModel.showDeleteDialog(it)
-                        }
-                    }) {
-                        Image(
-                            imageVector = Icons.Filled.Delete,
-                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
-                            contentDescription = null
-                        )
-                    }
-                }
-            )
-        },
-        content = { paddingValues ->
-            if (uiState.isLoading) {
-                Box(
+    Scaffold(topBar = {
+        TopAppBar(colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            titleContentColor = MaterialTheme.colorScheme.primary,
+        ), navigationIcon = {
+            IconButton(onClick = { onBackPressed() }) {
+                Image(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
+                    contentDescription = null
+                )
+            }
+        }, title = {
+            Text(text = uiState.record?.fullTime ?: "")
+        }, actions = {
+            IconButton(onClick = { viewModel.showEditEntryDialog() }) {
+                Image(
+                    imageVector = Icons.Filled.Edit,
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
+                    contentDescription = null
+                )
+            }
+            IconButton(onClick = {
+                viewModel.showDeleteDialog()
+            }) {
+                Image(
+                    imageVector = Icons.Filled.Delete,
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
+                    contentDescription = null
+                )
+            }
+        })
+    }, content = { paddingValues ->
+        if (uiState.isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = paddingValues.calculateTopPadding())
+                    .padding(8.dp)
+            ) {
+                CircularProgressIndicator()
+            }
+        } else {
+            uiState.record?.let { dayRecord ->
+                DetailsScreenContent(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = paddingValues.calculateTopPadding())
                         .padding(8.dp)
-                ) {
-                    CircularProgressIndicator()
-                }
-            } else {
-                uiState.record?.let { dayRecord ->
-                    DetailsScreenContent(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = paddingValues.calculateTopPadding())
-                            .padding(8.dp)
-                            .nestedScroll(rememberNestedScrollInteropConnection()),
-                        record = dayRecord
-                    )
-                }
-
+                        .nestedScroll(rememberNestedScrollInteropConnection()),
+                    record = dayRecord
+                )
             }
+
         }
-    )
+    })
     when (uiEvents) {
         is DetailsUiEvents.ShowEditDateDialog -> {
-            Dialog(
-                onDismissRequest = { viewModel.hideEditEntryDialog() }
-            ) {
+            Dialog(onDismissRequest = { viewModel.hideEditEntryDialog() }) {
                 Surface {
-                    EditDayDialogContent(
-                        currentDay = uiState.record?.time ?: 0,
-                        onConfirm = {
-                            viewModel.updateDate(it / 1000)
-                            viewModel.hideEditEntryDialog()
-                        },
-                        onDismiss = { viewModel.hideEditEntryDialog() }
-                    )
+                    EditDayDialogContent(currentDay = uiState.record?.time ?: 0, onConfirm = {
+                        viewModel.updateDate(it / 1000)
+                        viewModel.hideEditEntryDialog()
+                    }, onDismiss = { viewModel.hideEditEntryDialog() })
                 }
             }
 
         }
 
         is DetailsUiEvents.ShowDeleteDialog -> {
-            Dialog(
-                onDismissRequest = { viewModel.hideDeleteDialog() }
-            ) {
+            Dialog(onDismissRequest = { viewModel.hideDeleteDialog() }) {
                 Surface {
-                    DeleteDayDialog(
-                        onConfirm = { viewModel.deleteDay() },
-                        onDismiss = { viewModel.hideDeleteDialog() }
-                    )
+                    DeleteDayDialog(onConfirm = { viewModel.deleteDay() },
+                        onDismiss = { viewModel.hideDeleteDialog() })
                 }
             }
         }
@@ -171,8 +148,7 @@ fun DetailsScreenContent(modifier: Modifier, record: Day) {
 fun DetailsScreenContentPreview() {
     Surface {
         DetailsScreenContent(
-            modifier = Modifier.fillMaxSize(),
-            record = testRecord
+            modifier = Modifier.fillMaxSize(), record = testRecord
         )
     }
 }

@@ -73,7 +73,7 @@ fun MealListItem(
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
                     fontSize = 20.sp,
-                    text = meal.time.unixTimeToDateHhMm() ?: ""
+                    text = meal.time.unixTimeToDateHhMm()
                 )
             }
             Column(
