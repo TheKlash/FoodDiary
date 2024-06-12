@@ -36,3 +36,4 @@ google-services.json
 # Android Profiling
 *.hprof
 /app/schemas/de.alekseipopov.fooddiary.data.db.Database/1.json
+/app/schemas/de.alekseipopov.fooddiary.data.db.Database/2.json
