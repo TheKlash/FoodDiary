@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 
 class DayRecordRepositoryImpl(
     private val database: Database
@@ -40,12 +41,16 @@ class DayRecordRepositoryImpl(
             .distinctUntilChanged()
             .flowOn(Dispatchers.IO)
 
-    override suspend fun createNewDay(date: Long): Long {
+    override suspend fun createNewDay(date: Long): Long = withContext(Dispatchers.IO) {
         val newDay = DayRecordEntity(id = 0, date = date)
-        return database.dayRecordDao().insert(newDay)
+        return@withContext database.dayRecordDao().insert(newDay)
     }
 
-    override suspend fun updateDay(day: Day) {
+    override suspend fun updateDay(day: Day) = withContext(Dispatchers.IO) {
         database.dayRecordDao().update(day.toDayRecordEntity())
+    }
+
+    override suspend fun deleteDay(day: Day) = withContext(Dispatchers.IO) {
+        database.dayRecordDao().delete(day.toDayRecordEntity())
     }
 }

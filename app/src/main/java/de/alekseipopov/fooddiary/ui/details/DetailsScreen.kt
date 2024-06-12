@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -75,6 +76,17 @@ fun DetailsScreen(
                             contentDescription = null
                         )
                     }
+                    IconButton(onClick = {
+                        uiState.record?.id?.let {
+                            viewModel.showDeleteDialog(it)
+                        }
+                    }) {
+                        Image(
+                            imageVector = Icons.Filled.Delete,
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
+                            contentDescription = null
+                        )
+                    }
                 }
             )
         },
@@ -112,7 +124,7 @@ fun DetailsScreen(
                     EditDayDialogContent(
                         currentDay = uiState.record?.time ?: 0,
                         onConfirm = {
-                            viewModel.updateDate(it/1000)
+                            viewModel.updateDate(it / 1000)
                             viewModel.hideEditEntryDialog()
                         },
                         onDismiss = { viewModel.hideEditEntryDialog() }
@@ -120,6 +132,23 @@ fun DetailsScreen(
                 }
             }
 
+        }
+
+        is DetailsUiEvents.ShowDeleteDialog -> {
+            Dialog(
+                onDismissRequest = { viewModel.hideDeleteDialog() }
+            ) {
+                Surface {
+                    DeleteDayDialog(
+                        onConfirm = { viewModel.deleteDay() },
+                        onDismiss = { viewModel.hideDeleteDialog() }
+                    )
+                }
+            }
+        }
+
+        is DetailsUiEvents.NavigateBack -> {
+            onBackPressed()
         }
 
         else -> {}

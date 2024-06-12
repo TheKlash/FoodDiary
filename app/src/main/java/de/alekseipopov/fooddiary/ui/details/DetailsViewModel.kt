@@ -11,6 +11,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -39,6 +40,7 @@ class DetailsViewModel(
                     }
                     Log.e("Exception!", exception.localizedMessage ?: "")
                 }
+                .distinctUntilChanged()
                 .collect {
                     _uiState.update { state -> state.copy(isLoading = false, record = it) }
                 }
@@ -57,6 +59,18 @@ class DetailsViewModel(
         }
     }
 
+    fun deleteDay() {
+        viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.Main) {
+                val day = _uiState.value.record
+                day?.let {
+                    repository.deleteDay(it)
+                }
+            }
+            _uiEvents.send(DetailsUiEvents.NavigateBack())
+        }
+    }
+
     fun showEditEntryDialog() {
         viewModelScope.launch(Dispatchers.Main) {
             _uiEvents.send(DetailsUiEvents.ShowEditDateDialog())
@@ -66,6 +80,18 @@ class DetailsViewModel(
     fun hideEditEntryDialog() {
         viewModelScope.launch(Dispatchers.Main) {
             _uiEvents.send(DetailsUiEvents.HideEditDateDialog())
+        }
+    }
+
+    fun showDeleteDialog(id: Int) {
+        viewModelScope.launch(Dispatchers.Main) {
+            _uiEvents.send(DetailsUiEvents.ShowDeleteDialog())
+        }
+    }
+
+    fun hideDeleteDialog() {
+        viewModelScope.launch(Dispatchers.Main) {
+            _uiEvents.send(DetailsUiEvents.HideDeleteDialog())
         }
     }
 

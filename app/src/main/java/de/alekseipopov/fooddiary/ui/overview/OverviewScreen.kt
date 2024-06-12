@@ -32,6 +32,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -60,6 +61,9 @@ fun OverviewScreen(
     val uiState by viewModel.uiState.collectAsState()
     val uiEvents by viewModel.uiEvents.collectAsState()
 
+    val rememberNavigateToDetails = remember { navigateToDetails }
+    val rememberNavigateToReport = remember { navigateToReport }
+
     Scaffold(
         topBar = { TopBar() },
         floatingActionButtonPosition = FabPosition.End,
@@ -83,7 +87,7 @@ fun OverviewScreen(
                         StateResult(
                             dayRecords = (uiState as UiState.Result<List<Day>>).data,
                             onDayRecordSelected = { id ->
-                                navigateToDetails(id)
+                                rememberNavigateToDetails(id)
                             }
                         )
                     }
@@ -99,7 +103,7 @@ fun OverviewScreen(
         }
     )
 
-    OverviewObserveUiEvents(uiEvents, viewModel, navigateToReport, navigateToDetails)
+    OverviewObserveUiEvents(uiEvents, viewModel, rememberNavigateToReport, rememberNavigateToDetails)
 }
 
 @Composable
@@ -137,7 +141,7 @@ private fun OverviewObserveUiEvents(
         }
 
         is OverviewUiEvents.ShowNewDay -> {
-            navigateToDetails((events as OverviewUiEvents.ShowNewDay).id.toString())
+            navigateToDetails(events.id.toString())
             viewModel.hideNewEntryDialog()
         }
 
@@ -239,29 +243,28 @@ private fun Fab(
 
 @Composable
 private fun DayRecordList(
-    recordsList: List<Day>?,
+    recordsList: List<Day>,
     onDayRecordSelected: (String?) -> Unit = { }
 ) {
-    recordsList?.let {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(
-                items = it,
-                itemContent = {
-                    DayRecordListItem(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { onDayRecordSelected(it.id.toString()) },
-                        day = it,
-                    )
-                }
-            )
-        }
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        items(
+            items = recordsList,
+            itemContent = {
+                DayRecordListItem(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onDayRecordSelected(it.id.toString()) },
+                    day = it,
+                )
+            }
+        )
     }
+
 }
 
 @Composable
