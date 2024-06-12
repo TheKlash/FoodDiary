@@ -95,8 +95,7 @@ fun DetailsScreen(
                         .fillMaxWidth()
                         .padding(top = paddingValues.calculateTopPadding())
                         .padding(8.dp)
-                        .nestedScroll(rememberNestedScrollInteropConnection()),
-                    record = dayRecord
+                        .nestedScroll(rememberNestedScrollInteropConnection()), record = dayRecord
                 )
             }
 

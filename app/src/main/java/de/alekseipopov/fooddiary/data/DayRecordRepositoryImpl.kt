@@ -41,9 +41,9 @@ class DayRecordRepositoryImpl(
             .distinctUntilChanged()
             .flowOn(Dispatchers.IO)
 
-    override suspend fun createNewDay(date: Long): Long = withContext(Dispatchers.IO) {
+    override suspend fun createNewDay(date: Long): Int = withContext(Dispatchers.IO) {
         val newDay = DayRecordEntity(id = 0, date = date)
-        return@withContext database.dayRecordDao().insert(newDay)
+        return@withContext database.dayRecordDao().insert(newDay).toInt()
     }
 
     override suspend fun updateDay(day: Day) = withContext(Dispatchers.IO) {

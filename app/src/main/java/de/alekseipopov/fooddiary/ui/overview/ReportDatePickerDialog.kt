@@ -38,7 +38,7 @@ import de.alekseipopov.fooddiary.util.unixTimeToDateFull
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReportDatePickerDialogContent(
-    onConfirm: (Long?, Long?) -> Unit,
+    onConfirm: (Long, Long) -> Unit,
     onDismiss: () -> Unit,
 ) {
     var startDatePickerState = rememberDatePickerState(initialDisplayMode = DisplayMode.Input)

@@ -16,6 +16,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import de.alekseipopov.fooddiary.ui.details.DetailsScreen
+import de.alekseipopov.fooddiary.ui.navigation.Navigation
+import de.alekseipopov.fooddiary.ui.navigation.Screen
+import de.alekseipopov.fooddiary.ui.navigation.Screen.Report.endDate
+import de.alekseipopov.fooddiary.ui.navigation.Screen.Report.startDate
 import de.alekseipopov.fooddiary.ui.overview.OverviewScreen
 import de.alekseipopov.fooddiary.ui.report.ReportScreen
 import de.alekseipopov.fooddiary.ui.theme.FoodDiaryTheme
@@ -39,37 +43,3 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@ExperimentalMaterial3Api
-@Composable
-fun Navigation(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = "overview") {
-        composable(route = "overview") {
-            OverviewScreen(
-                navigateToDetails = { recordId -> navController.navigate("details/$recordId") },
-                navigateToReport = { startDate, endDate -> navController.navigate("report/$startDate/$endDate") }
-            )
-        }
-        composable(route = "details/{recordId}") {
-            val recordId = it.arguments?.getString("recordId")?.toInt() ?: -1
-            DetailsScreen(
-                onBackPressed = { navController.popBackStack() },
-                recordId = recordId
-            )
-        }
-        composable(
-            route = "report/{startDate}/{endDate}",
-            arguments = listOf(
-                navArgument("startDate") { type = NavType.LongType },
-                navArgument("endDate") { type = NavType.LongType }
-            )
-        ) {
-            val startDate = it.arguments?.getLong("startDate") ?: 0L
-            val endDate = it.arguments?.getLong("endDate") ?: 0L
-            ReportScreen(
-                onBackPressed = { navController.popBackStack() },
-                startDate = startDate,
-                endDate = endDate
-            )
-        }
-    }
-}

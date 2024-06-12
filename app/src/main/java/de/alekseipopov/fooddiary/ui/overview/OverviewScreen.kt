@@ -54,15 +54,12 @@ import org.koin.androidx.compose.koinViewModel
 @ExperimentalMaterial3Api
 @Composable
 fun OverviewScreen(
-    navigateToDetails: (String?) -> Unit,
-    navigateToReport: (Long?, Long?) -> Unit
+    navigateToDetails: (Int) -> Unit,
+    navigateToReport: (Long, Long) -> Unit
 ) {
     val viewModel: OverviewViewModel = koinViewModel()
     val uiState by viewModel.uiState.collectAsState()
     val uiEvents by viewModel.uiEvents.collectAsState()
-
-    val rememberNavigateToDetails = remember { navigateToDetails }
-    val rememberNavigateToReport = remember { navigateToReport }
 
     Scaffold(
         topBar = { TopBar() },
@@ -87,7 +84,7 @@ fun OverviewScreen(
                         StateResult(
                             dayRecords = (uiState as UiState.Result<List<Day>>).data,
                             onDayRecordSelected = { id ->
-                                rememberNavigateToDetails(id)
+                                navigateToDetails(id)
                             }
                         )
                     }
@@ -103,15 +100,15 @@ fun OverviewScreen(
         }
     )
 
-    OverviewObserveUiEvents(uiEvents, viewModel, rememberNavigateToReport, rememberNavigateToDetails)
+    OverviewObserveUiEvents(uiEvents, viewModel, navigateToDetails, navigateToReport)
 }
 
 @Composable
 private fun OverviewObserveUiEvents(
     events: OverviewUiEvents?,
     viewModel: OverviewViewModel,
-    navigateToReport: (Long?, Long?) -> Unit,
-    navigateToDetails: (String?) -> Unit
+    navigateToDetails: (Int) -> Unit,
+    navigateToReport: (Long, Long) -> Unit
 ) {
     when (events) {
         is OverviewUiEvents.ShowReportDatePickerDialog -> {
@@ -141,7 +138,7 @@ private fun OverviewObserveUiEvents(
         }
 
         is OverviewUiEvents.ShowNewDay -> {
-            navigateToDetails(events.id.toString())
+            navigateToDetails(events.id)
             viewModel.hideNewEntryDialog()
         }
 
@@ -167,7 +164,7 @@ private fun StateLoading() {
 @Composable
 private fun StateResult(
     dayRecords: List<Day>,
-    onDayRecordSelected: (String?) -> Unit = { }
+    onDayRecordSelected: (Int) -> Unit = { }
 ) {
     Column(
         modifier = Modifier.fillMaxSize()
@@ -244,7 +241,7 @@ private fun Fab(
 @Composable
 private fun DayRecordList(
     recordsList: List<Day>,
-    onDayRecordSelected: (String?) -> Unit = { }
+    onDayRecordSelected: (Int) -> Unit = { }
 ) {
     LazyColumn(
         modifier = Modifier
@@ -258,7 +255,7 @@ private fun DayRecordList(
                 DayRecordListItem(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { onDayRecordSelected(it.id.toString()) },
+                        .clickable { onDayRecordSelected(it.id) },
                     day = it,
                 )
             }
