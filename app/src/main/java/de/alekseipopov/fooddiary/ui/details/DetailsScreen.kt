@@ -2,12 +2,11 @@ package de.alekseipopov.fooddiary.ui.details
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
@@ -33,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import de.alekseipopov.fooddiary.data.model.Day
 import de.alekseipopov.fooddiary.ui.details.model.DetailsUiEvents
+import de.alekseipopov.fooddiary.ui.details.model.DetailsUiState
 import de.alekseipopov.fooddiary.util.testRecord
 import org.koin.androidx.compose.koinViewModel
 
@@ -44,71 +44,77 @@ fun DetailsScreen(
     val viewModel: DetailsViewModel = koinViewModel()
     val uiState by viewModel.uiState.collectAsState()
     val uiEvents by viewModel.uiEvents.collectAsState(null)
+
     viewModel.getDay(recordId)
 
-    Scaffold(topBar = {
-        TopAppBar(colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            titleContentColor = MaterialTheme.colorScheme.primary,
-        ), navigationIcon = {
-            IconButton(onClick = { onBackPressed() }) {
-                Image(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
-                    contentDescription = null
-                )
-            }
-        }, title = {
-            Text(text = uiState.record?.fullTime ?: "")
-        }, actions = {
-            IconButton(onClick = { viewModel.showEditEntryDialog() }) {
-                Image(
-                    imageVector = Icons.Filled.Edit,
-                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
-                    contentDescription = null
-                )
-            }
-            IconButton(onClick = {
-                viewModel.showDeleteDialog()
-            }) {
-                Image(
-                    imageVector = Icons.Filled.Delete,
-                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
-                    contentDescription = null
-                )
-            }
-        })
-    }, content = { paddingValues ->
-        if (uiState.isLoading) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.primary
+                ),
+                navigationIcon = {
+                    IconButton(onClick = { onBackPressed() }) {
+                        Image(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
+                            contentDescription = null
+                        )
+                    }
+                },
+                title = {
+                    Text(text = uiState.record?.fullTime ?: "")
+                },
+                actions = {
+                    TopAppBarActions(
+                        edit = { viewModel.showEditEntryDialog() },
+                        delete = { viewModel.showDeleteDialog() }
+                    )
+                }
+            ) },
+        content = { paddingValues ->
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = paddingValues.calculateTopPadding())
-                    .padding(8.dp)
+                    .fillMaxSize()
+                    .padding(
+                        top = paddingValues.calculateTopPadding(),
+                        bottom = 8.dp,
+                        start = 8.dp,
+                        end = 8.dp
+                    )
             ) {
-                CircularProgressIndicator()
+                if (uiState.isLoading) {
+                    CircularProgressIndicator()
+                } else {
+                    uiState.record?.let { dayRecord ->
+                        DetailsScreenContent(dayRecord)
+                    }
+                }
             }
-        } else {
-            uiState.record?.let { dayRecord ->
-                DetailsScreenContent(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = paddingValues.calculateTopPadding())
-                        .padding(8.dp)
-                        .nestedScroll(rememberNestedScrollInteropConnection()), record = dayRecord
-                )
-            }
-
         }
-    })
+    )
+
+    ObserveUiEvents(uiEvents, viewModel, uiState, onBackPressed)
+}
+
+@Composable
+private fun ObserveUiEvents(
+    uiEvents: DetailsUiEvents?,
+    viewModel: DetailsViewModel,
+    uiState: DetailsUiState?,
+    onBackPressed: () -> Unit
+) {
     when (uiEvents) {
         is DetailsUiEvents.ShowEditDateDialog -> {
             Dialog(onDismissRequest = { viewModel.hideEditEntryDialog() }) {
                 Surface {
-                    EditDayDialogContent(currentDay = uiState.record?.time ?: 0, onConfirm = {
-                        viewModel.updateDate(it / 1000)
-                        viewModel.hideEditEntryDialog()
-                    }, onDismiss = { viewModel.hideEditEntryDialog() })
+                    EditDayDialogContent(
+                        currentDay = uiState?.record?.time ?: 0,
+                        onConfirm = {
+                            viewModel.updateDate(it / 1000)
+                            viewModel.hideEditEntryDialog() },
+                        onDismiss = { viewModel.hideEditEntryDialog() })
                 }
             }
 
@@ -117,8 +123,10 @@ fun DetailsScreen(
         is DetailsUiEvents.ShowDeleteDialog -> {
             Dialog(onDismissRequest = { viewModel.hideDeleteDialog() }) {
                 Surface {
-                    DeleteDayDialog(onConfirm = { viewModel.deleteDay() },
-                        onDismiss = { viewModel.hideDeleteDialog() })
+                    DeleteDayDialog(
+                        onConfirm = { viewModel.deleteDay() },
+                        onDismiss = { viewModel.hideDeleteDialog() }
+                    )
                 }
             }
         }
@@ -133,21 +141,45 @@ fun DetailsScreen(
 }
 
 @Composable
-fun DetailsScreenContent(modifier: Modifier, record: Day) {
-    LazyColumn(modifier = modifier) {
-        items(1) {
-            DayDetailsItem(record)
-            Spacer(modifier = Modifier.height(12.dp))
-        }
+private fun DetailsScreenContent(dsyRecord: Day) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()
+            .nestedScroll(rememberNestedScrollInteropConnection())
+    ) {
+        DayDetailsItem(dsyRecord)
     }
 }
 
 @Composable
+private fun TopAppBarActions(
+    edit: () -> Unit,
+    delete: () -> Unit
+) {
+    IconButton(onClick = { edit() }) {
+        Image(
+            imageVector = Icons.Filled.Edit,
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
+            contentDescription = null
+        )
+    }
+    IconButton(onClick = { delete() }) {
+        Image(
+            imageVector = Icons.Filled.Delete,
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
+            contentDescription = null
+        )
+    }
+
+}
+
+@Composable
 @Preview
-fun DetailsScreenContentPreview() {
+private fun DetailsScreenContentPreview() {
     Surface {
         DetailsScreenContent(
-            modifier = Modifier.fillMaxSize(), record = testRecord
+            dsyRecord = testRecord
         )
     }
 }

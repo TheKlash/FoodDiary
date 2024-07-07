@@ -32,7 +32,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -49,15 +48,14 @@ import de.alekseipopov.fooddiary.ui.overview.model.OverviewUiEvents
 import de.alekseipopov.fooddiary.ui.theme.FoodDiaryTheme
 import de.alekseipopov.fooddiary.util.testRecord
 import de.alekseipopov.fooddiary.util.testRecordList
-import org.koin.androidx.compose.koinViewModel
 
 @ExperimentalMaterial3Api
 @Composable
 fun OverviewScreen(
     navigateToDetails: (Int) -> Unit,
-    navigateToReport: (Long, Long) -> Unit
+    navigateToReport: (Long, Long) -> Unit,
+    viewModel: OverviewViewModel
 ) {
-    val viewModel: OverviewViewModel = koinViewModel()
     val uiState by viewModel.uiState.collectAsState()
     val uiEvents by viewModel.uiEvents.collectAsState()
 
@@ -100,11 +98,11 @@ fun OverviewScreen(
         }
     )
 
-    OverviewObserveUiEvents(uiEvents, viewModel, navigateToDetails, navigateToReport)
+    ObserveUiEvents(uiEvents, viewModel, navigateToDetails, navigateToReport)
 }
 
 @Composable
-private fun OverviewObserveUiEvents(
+private fun ObserveUiEvents(
     events: OverviewUiEvents?,
     viewModel: OverviewViewModel,
     navigateToDetails: (Int) -> Unit,

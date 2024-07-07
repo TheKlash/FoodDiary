@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import de.alekseipopov.fooddiary.ui.details.DetailsScreen
 import de.alekseipopov.fooddiary.ui.overview.OverviewScreen
 import de.alekseipopov.fooddiary.ui.report.ReportScreen
+import org.koin.androidx.compose.koinViewModel
 
 @ExperimentalMaterial3Api
 @Composable
@@ -24,13 +25,15 @@ fun Navigation(navController: NavHostController) {
                 navController.navigate(
                     Screen.Report.createRoute(startDate, endDate)
                 )
-            })
+            },
+                viewModel = koinViewModel()
+            )
         }
         composable(
             route = Screen.Details.route, arguments = Screen.Details.navArguments
         ) {
             DetailsScreen(
-                onBackPressed = { navController.popUpTo("overview") },
+                onBackPressed = { navController.navigateUp() },
                 recordId = it.arguments?.getInt(Screen.Details.recordId) ?: -1
             )
         }
@@ -38,7 +41,7 @@ fun Navigation(navController: NavHostController) {
             route = Screen.Report.route, arguments = Screen.Report.navArguments
         ) {
             ReportScreen(
-                onBackPressed = { navController.popUpTo(Screen.Overview.route) },
+                onBackPressed = { navController.navigateUp() },
                 startDate = it.arguments?.getLong(Screen.Report.startDate) ?: 0L,
                 endDate = it.arguments?.getLong(Screen.Report.endDate) ?: 0L
             )
