@@ -33,13 +33,13 @@ import androidx.compose.ui.window.Dialog
 import de.alekseipopov.fooddiary.data.model.Day
 import de.alekseipopov.fooddiary.ui.details.model.DetailsUiEvents
 import de.alekseipopov.fooddiary.ui.details.model.DetailsUiState
+import de.alekseipopov.fooddiary.ui.theme.FoodDiaryTheme
 import de.alekseipopov.fooddiary.util.testRecord
 import org.koin.androidx.compose.koinViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailsScreen(
-    onBackPressed: () -> Unit, recordId: Int
+    navigateBack: () -> Unit, recordId: Int
 ) {
     val viewModel: DetailsViewModel = koinViewModel()
     val uiState by viewModel.uiState.collectAsState()
@@ -49,29 +49,11 @@ fun DetailsScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary
-                ),
-                navigationIcon = {
-                    IconButton(onClick = { onBackPressed() }) {
-                        Image(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
-                            contentDescription = null
-                        )
-                    }
-                },
-                title = {
-                    Text(text = uiState.record?.fullTime ?: "")
-                },
-                actions = {
-                    TopAppBarActions(
-                        edit = { viewModel.showEditEntryDialog() },
-                        delete = { viewModel.showDeleteDialog() }
-                    )
-                }
+            TopBar (
+                onBackPressed = navigateBack,
+                title = uiState.record?.fullTime ?: "",
+                onEditClick = { viewModel.showEditEntryDialog() },
+                onDeleteClick = { viewModel.showDeleteDialog() }
             ) },
         content = { paddingValues ->
             Box(
@@ -95,7 +77,7 @@ fun DetailsScreen(
         }
     )
 
-    ObserveUiEvents(uiEvents, viewModel, uiState, onBackPressed)
+    ObserveUiEvents(uiEvents, viewModel, uiState, navigateBack)
 }
 
 @Composable
@@ -140,6 +122,40 @@ private fun ObserveUiEvents(
 
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun TopBar(
+    onBackPressed: () -> Unit,
+    title: String,
+    onEditClick: () -> Unit,
+    onDeleteClick: () -> Unit
+) {
+    TopAppBar(
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            titleContentColor = MaterialTheme.colorScheme.primary
+        ),
+        navigationIcon = {
+            IconButton(onClick = { onBackPressed() }) {
+                Image(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
+                    contentDescription = null
+                )
+            }
+        },
+        title = {
+            Text(text = title)
+        },
+        actions = {
+            TopBarActions(
+                edit = { onEditClick() },
+                delete = { onDeleteClick() }
+            )
+        }
+    )
+}
+
 @Composable
 private fun DetailsScreenContent(dsyRecord: Day) {
     Column(
@@ -153,7 +169,7 @@ private fun DetailsScreenContent(dsyRecord: Day) {
 }
 
 @Composable
-private fun TopAppBarActions(
+private fun TopBarActions(
     edit: () -> Unit,
     delete: () -> Unit
 ) {
@@ -172,6 +188,21 @@ private fun TopAppBarActions(
         )
     }
 
+}
+
+@Composable
+@Preview
+private fun TopBarPreview() {
+    Surface {
+        FoodDiaryTheme {
+            TopBar(
+                onBackPressed = {  },
+                title = "Title",
+                onEditClick = { },
+                onDeleteClick = { }
+            )
+        }
+    }
 }
 
 @Composable

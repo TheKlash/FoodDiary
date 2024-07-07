@@ -15,44 +15,43 @@ import org.koin.androidx.compose.koinViewModel
 @ExperimentalMaterial3Api
 @Composable
 fun Navigation(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = Screen.Overview.route) {
+    NavHost (
+        navController = navController,
+        startDestination = Screen.Overview.route
+    ) {
         composable(route = Screen.Overview.route) {
-            OverviewScreen(navigateToDetails = {
-                navController.navigate(
-                    Screen.Details.createRoute(it)
-                )
-            }, navigateToReport = { startDate, endDate ->
-                navController.navigate(
-                    Screen.Report.createRoute(startDate, endDate)
-                )
-            },
+            OverviewScreen (
+                navigateToDetails = {
+                    navController.navigate(
+                        Screen.Details.createRoute(it)
+                    )
+                },
+                navigateToReport = { startDate, endDate ->
+                    navController.navigate(
+                        Screen.Report.createRoute(startDate, endDate)
+                    )
+                },
                 viewModel = koinViewModel()
             )
         }
         composable(
-            route = Screen.Details.route, arguments = Screen.Details.navArguments
+            route = Screen.Details.route,
+            arguments = Screen.Details.navArguments
         ) {
             DetailsScreen(
-                onBackPressed = { navController.navigateUp() },
+                navigateBack = { navController.navigateUp() },
                 recordId = it.arguments?.getInt(Screen.Details.recordId) ?: -1
             )
         }
         composable(
-            route = Screen.Report.route, arguments = Screen.Report.navArguments
+            route = Screen.Report.route,
+            arguments = Screen.Report.navArguments
         ) {
             ReportScreen(
-                onBackPressed = { navController.navigateUp() },
+                navigateBack = { navController.navigateUp() },
                 startDate = it.arguments?.getLong(Screen.Report.startDate) ?: 0L,
                 endDate = it.arguments?.getLong(Screen.Report.endDate) ?: 0L
             )
         }
     }
-}
-
-fun NavController.popUpTo(destination: String) = navigate(destination) {
-    popUpTo(graph.findStartDestination().id) {
-        saveState = true
-    }
-    // Restore state when reselecting a previously selected item
-    restoreState = true
 }

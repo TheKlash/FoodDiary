@@ -39,7 +39,7 @@ import org.koin.androidx.compose.koinViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReportScreen(
-    onBackPressed: () -> Unit,
+    navigateBack: () -> Unit,
     startDate: Long,
     endDate: Long
 ) {
@@ -62,7 +62,7 @@ fun ReportScreen(
                     titleContentColor = MaterialTheme.colorScheme.primary,
                 ),
                 navigationIcon = {
-                    IconButton(onClick = { onBackPressed() }) {
+                    IconButton(onClick = { navigateBack() }) {
                         Image(
 
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
