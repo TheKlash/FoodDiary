@@ -23,6 +23,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -31,60 +32,74 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import de.alekseipopov.fooddiary.data.model.Day
+import de.alekseipopov.fooddiary.ui.base.UiState
 import de.alekseipopov.fooddiary.ui.details.model.DetailsUiEvents
-import de.alekseipopov.fooddiary.ui.details.model.DetailsUiState
 import de.alekseipopov.fooddiary.ui.theme.FoodDiaryTheme
 import de.alekseipopov.fooddiary.util.testRecord
-import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun DetailsScreen(
-    navigateBack: () -> Unit, recordId: Int
+    navigateBack: () -> Unit,
+    viewModel: DetailsViewModel
 ) {
-    val viewModel: DetailsViewModel = koinViewModel()
     val uiState by viewModel.uiState.collectAsState()
-    val uiEvents by viewModel.uiEvents.collectAsState(null)
+    val uiEvents by viewModel.uiEvents.collectAsState()
 
-    viewModel.getDay(recordId)
+    when (val uiState = uiState) {
+        is UiState.Error -> {
 
-    Scaffold(
-        topBar = {
-            TopBar (
-                onBackPressed = navigateBack,
-                title = uiState.record?.fullTime ?: "",
-                onEditClick = { viewModel.showEditEntryDialog() },
-                onDeleteClick = { viewModel.showDeleteDialog() }
-            ) },
-        content = { paddingValues ->
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(
-                        top = paddingValues.calculateTopPadding(),
-                        bottom = 8.dp,
-                        start = 8.dp,
-                        end = 8.dp
-                    )
+        }
+        is UiState.Loading -> {
+            Box (
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
             ) {
-                if (uiState.isLoading) {
-                    CircularProgressIndicator()
-                } else {
-                    uiState.record?.let { dayRecord ->
-                        DetailsScreenContent(dayRecord)
-                    }
-                }
+                CircularProgressIndicator()
             }
         }
-    )
+        is UiState.Result -> {
+            val day = uiState.data
+            Scaffold(
+                topBar = {
+                    TopBar (
+                        onBackPressed = navigateBack,
+                        title = day.fullTime,
+                        onEditClick = { viewModel.showEditEntryDialog() },
+                        onDeleteClick = { viewModel.showDeleteDialog() }
+                    ) },
+                content = { paddingValues ->
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(
+                                top = paddingValues.calculateTopPadding(),
+                                bottom = 8.dp,
+                                start = 8.dp,
+                                end = 8.dp
+                            )
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentHeight()
+                                .nestedScroll(rememberNestedScrollInteropConnection())
+                        ) {
+                            DayDetailsItem(day)
+                        }
+                    }
+                }
+            )
 
-    ObserveUiEvents(uiEvents, viewModel, uiState, navigateBack)
+            ObserveUiEvents(uiEvents, viewModel, day, navigateBack)
+        }
+    }
 }
 
 @Composable
 private fun ObserveUiEvents(
     uiEvents: DetailsUiEvents?,
     viewModel: DetailsViewModel,
-    uiState: DetailsUiState?,
+    day: Day,
     onBackPressed: () -> Unit
 ) {
     when (uiEvents) {
@@ -92,7 +107,7 @@ private fun ObserveUiEvents(
             Dialog(onDismissRequest = { viewModel.hideEditEntryDialog() }) {
                 Surface {
                     EditDayDialogContent(
-                        currentDay = uiState?.record?.time ?: 0,
+                        currentDay = day.time,
                         onConfirm = {
                             viewModel.updateDate(it / 1000)
                             viewModel.hideEditEntryDialog() },
@@ -158,14 +173,6 @@ private fun TopBar(
 
 @Composable
 private fun DetailsScreenContent(dsyRecord: Day) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()
-            .nestedScroll(rememberNestedScrollInteropConnection())
-    ) {
-        DayDetailsItem(dsyRecord)
-    }
 }
 
 @Composable

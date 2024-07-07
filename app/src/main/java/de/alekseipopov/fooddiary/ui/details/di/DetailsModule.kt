@@ -5,5 +5,5 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val detailsModule = module {
-    viewModel { DetailsViewModel(get()) }
+    viewModel { parameters -> DetailsViewModel(get(), recordId = parameters.get()) }
 }
