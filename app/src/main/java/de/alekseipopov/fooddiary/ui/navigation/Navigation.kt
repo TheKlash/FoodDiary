@@ -9,9 +9,8 @@ import de.alekseipopov.fooddiary.ui.details.DetailsScreen
 import de.alekseipopov.fooddiary.ui.details.DetailsViewModel
 import de.alekseipopov.fooddiary.ui.overview.OverviewScreen
 import de.alekseipopov.fooddiary.ui.report.ReportScreen
-import org.koin.androidx.compose.getViewModel
+import de.alekseipopov.fooddiary.ui.report.ReportViewModel
 import org.koin.androidx.compose.koinViewModel
-import org.koin.androidx.compose.viewModel
 import org.koin.core.parameter.parametersOf
 
 @ExperimentalMaterial3Api
@@ -45,10 +44,14 @@ fun Navigation(navController: NavHostController) {
             route = Screen.Report.route,
             arguments = Screen.Report.navArguments
         ) {
+            val startDate = it.arguments?.getLong(Screen.Report.startDate) ?: 0L
+            val endDate = it.arguments?.getLong(Screen.Report.endDate) ?: 0L
+            val viewModel: ReportViewModel = koinViewModel(
+                parameters = { parametersOf(startDate, endDate) }
+            )
             ReportScreen(
                 navigateBack = { navController.navigateUp() },
-                startDate = it.arguments?.getLong(Screen.Report.startDate) ?: 0L,
-                endDate = it.arguments?.getLong(Screen.Report.endDate) ?: 0L
+                viewModel = viewModel
             )
         }
     }
