@@ -2,10 +2,9 @@ package de.alekseipopov.fooddiary.ui.report
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -36,7 +35,6 @@ import de.alekseipopov.fooddiary.ui.theme.FoodDiaryTheme
 import de.alekseipopov.fooddiary.util.testRecordList
 import org.koin.androidx.compose.koinViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReportScreen(
     navigateBack: () -> Unit,
@@ -55,55 +53,64 @@ fun ReportScreen(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        topBar = {
-            TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
-                ),
-                navigationIcon = {
-                    IconButton(onClick = { navigateBack() }) {
-                        Image(
-
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
-                            contentDescription = null
-                        )
-                    }
-                },
-                title = { Text(text = title) }
-            )
-        },
+        topBar = { TopBar(onNavigateIconPressed = navigateBack, title = title) },
         content = { paddingValues ->
             uiState.report?.records?.let {
-                ReportScreenContent(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = paddingValues.calculateTopPadding())
-                        .padding(8.dp)
-                        .nestedScroll(rememberNestedScrollInteropConnection()),
-                    records = it
-                )
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        top = paddingValues.calculateTopPadding(),
+                        bottom = 8.dp,
+                        start = 8.dp,
+                        end = 8.dp
+                    )
+                ) {
+                    ReportScreenContent(days = it)
+                }
             }
         }
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReportScreenContent(modifier: Modifier = Modifier, records: List<Day>) {
+private fun TopBar (
+    onNavigateIconPressed: () -> Unit = {},
+    title: String
+) {
+    TopAppBar(
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            titleContentColor = MaterialTheme.colorScheme.primary,
+        ),
+        navigationIcon = {
+            IconButton(onClick = { onNavigateIconPressed() }) {
+                Image(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
+                    contentDescription = null
+                )
+            }
+        },
+        title = { Text(text = title) }
+    )
+
+}
+
+@Composable
+private fun ReportScreenContent(days: List<Day>) {
     LazyColumn(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(32.dp)
+        modifier = Modifier.nestedScroll(rememberNestedScrollInteropConnection()),
+        verticalArrangement = Arrangement.spacedBy(48.dp)
     ) {
         items(
-            items = records,
+            items = days,
             itemContent = {
                 Text(
                     fontSize = 24.sp,
                     text = it.fullTime
                 )
                 DayDetailsItem(day = it)
-                Spacer(Modifier.height(24.dp))
             }
         )
     }
@@ -111,13 +118,24 @@ fun ReportScreenContent(modifier: Modifier = Modifier, records: List<Day>) {
 
 @Composable
 @Preview
-fun ReportScreenContentPreview() {
+private fun TopBarPreview() {
+    val title = stringResource(R.string.report_title, 01.01, 12.12)
+
+    FoodDiaryTheme {
+        TopBar(title = title)
+    }
+}
+
+@Composable
+@Preview
+private fun ReportScreenContentPreview() {
     FoodDiaryTheme {
         Surface {
-            ReportScreenContent(
-                modifier = Modifier.fillMaxSize(),
-                records = testRecordList
-            )
+            Box(modifier = Modifier.fillMaxSize()) {
+                ReportScreenContent(
+                    days = testRecordList
+                )
+            }
         }
     }
 }

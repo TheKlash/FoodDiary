@@ -33,11 +33,7 @@ fun DayDetailsItem(
 ) {
     Column {
         Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            stringResource(
-                R.string.details_item_meal_counter, day?.meals?.size ?: 0
-            )
-        )
+        Text(stringResource(R.string.details_item_meal_counter, day?.meals?.size ?: 0))
         day?.meals?.forEach {
             Spacer(modifier = Modifier.height(8.dp))
             MealListItem(meal = it)
@@ -47,7 +43,7 @@ fun DayDetailsItem(
 }
 
 @Composable
-fun MealListItem(
+private fun MealListItem(
     meal: Meal
 ) {
     Card(
@@ -95,7 +91,7 @@ fun MealListItem(
 
 @Preview
 @Composable
-fun DayDetailsItemPreview() {
+private fun DayDetailsItemPreview() {
     FoodDiaryTheme {
         Surface {
             DayDetailsItem(day = testRecord)
