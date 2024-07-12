@@ -126,9 +126,7 @@ private fun ObserveUiEvents(
             ) {
                 Surface {
                     EditDayDialogContent(
-                        onConfirm = {
-                            viewModel.createNewDay(it)
-                        },
+                        onConfirm = { viewModel.createNewDay(it) },
                         onDismiss = { viewModel.hideNewEntryDialog() }
                     )
                 }

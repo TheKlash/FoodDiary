@@ -112,11 +112,7 @@ fun EditDayDialogContent(
     }
     if (showDatePickerDialog) {
         DatePickerDialog(
-            content = {
-                DatePicker(
-                    state = datePickerState
-                )
-            },
+            content = { DatePicker(state = datePickerState) },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -132,9 +128,7 @@ fun EditDayDialogContent(
             },
             dismissButton = {
                 TextButton(
-                    onClick = {
-                        showDatePickerDialog = false
-                    }
+                    onClick = { showDatePickerDialog = false }
                 ) {
                     Text(
                         color = MaterialTheme.colorScheme.secondary,

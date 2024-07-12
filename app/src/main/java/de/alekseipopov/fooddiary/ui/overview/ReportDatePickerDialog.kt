@@ -9,12 +9,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DisplayMode
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -24,7 +24,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -38,16 +37,31 @@ import de.alekseipopov.fooddiary.util.unixTimeToDateFull
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReportDatePickerDialogContent(
-    onConfirm: (Long, Long) -> Unit,
-    onDismiss: () -> Unit,
+    onConfirm: (Long, Long) -> Unit = { _, _ -> },
+    onDismiss: () -> Unit = { },
 ) {
-    var startDatePickerState = rememberDatePickerState(initialDisplayMode = DisplayMode.Input)
-    var showStartDatePickerDialog by remember { mutableStateOf(false) }
-    var endDatePickerState = rememberDatePickerState(initialDisplayMode = DisplayMode.Input)
-    var showEndDatePickerDialog by remember { mutableStateOf(false) }
+    var startDateMills = remember { 0L }
+    var endDateMills = remember { 0L }
+    var currentDateMills = remember { System.currentTimeMillis() }
 
-    val startDate = startDatePickerState.selectedDateMillis
-    val endDate = endDatePickerState.selectedDateMillis
+    var endPickerState = rememberDatePickerState(
+        selectableDates = object : SelectableDates {
+            override fun isSelectableDate(selectedDateMills: Long): Boolean {
+                return selectedDateMills in (startDateMills + 1)..<currentDateMills
+            }
+        }
+    )
+
+    var startPickerState = rememberDatePickerState(
+        selectableDates = object : SelectableDates {
+            override fun isSelectableDate(selectedDateMills: Long): Boolean {
+                return selectedDateMills in (endDateMills + 1)..<currentDateMills
+            }
+        }
+    )
+
+    var showStartPickerDialog by remember { mutableStateOf(false) }
+    var showEndPickerDialog by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
 
@@ -65,12 +79,12 @@ fun ReportDatePickerDialogContent(
             Button(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
-                    showStartDatePickerDialog = !showStartDatePickerDialog && !showEndDatePickerDialog
+                    showStartPickerDialog = !showStartPickerDialog && !showEndPickerDialog
                 }
             ) {
                 Text(
                     textAlign = TextAlign.Center,
-                    text = startDatePickerState.selectedDateMillis?.div(1000)?.unixTimeToDateFull()
+                    text = startPickerState.selectedDateMillis?.div(1000)?.unixTimeToDateFull()
                         ?: stringResource(R.string.report_select_start_date)
                 )
             }
@@ -80,46 +94,54 @@ fun ReportDatePickerDialogContent(
             Button(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
-                    showEndDatePickerDialog = !showEndDatePickerDialog && !showStartDatePickerDialog
+                    showEndPickerDialog = !showEndPickerDialog && !showStartPickerDialog
                 }
             ) {
                 Text(
                     textAlign = TextAlign.Center,
-                    text = endDatePickerState.selectedDateMillis?.div(1000)?.unixTimeToDateFull()
+                    text = endPickerState.selectedDateMillis?.div(1000)?.unixTimeToDateFull()
                         ?: stringResource(R.string.report_select_end_date)
                 )
             }
 
-            if (showStartDatePickerDialog) {
-                DatePicker(
-                    modifier = Modifier.wrapContentSize(),
-                    state = startDatePickerState,
-                    //dateValidator = { date ->
-                       // date < (endDatePickerState.selectedDateMillis ?: System.currentTimeMillis())
-                    //}
+            if (showStartPickerDialog) {
+                DatePickerDialog(
+                    content = {
+                        DatePicker(
+                            state = startPickerState,
+                        )
+
+                    },
+                    confirmButton = {
+                        startDateMills = startPickerState.selectedDateMillis ?: 0L
+                        TextButton(
+                            onClick = { showStartPickerDialog = false }
+                        ) {
+                            Text(stringResource(R.string.report_ok))
+                        }
+                    },
+                    onDismissRequest = { showEndPickerDialog = false },
                 )
-                Button(
-                    modifier = Modifier.align(Alignment.End),
-                    onClick = { showStartDatePickerDialog = false }
-                ) {
-                    Text(stringResource(R.string.report_ok))
-                }
             }
 
-            if (showEndDatePickerDialog) {
-                DatePicker(
-                    modifier = Modifier.wrapContentSize(),
-                    state = endDatePickerState,
-                    //dateValidator = { date ->
-                      //  date > (startDatePickerState.selectedDateMillis ?: 0L) && date <= System.currentTimeMillis()
-                    //}
+            if (showEndPickerDialog) {
+                DatePickerDialog(
+                    content = {
+                        DatePicker(
+                            state = endPickerState
+                        )
+
+                    },
+                    confirmButton = {
+                        endDateMills = endPickerState.selectedDateMillis ?: 0L
+                        TextButton(
+                            onClick = { showEndPickerDialog = false }
+                        ) {
+                            Text(stringResource(R.string.report_ok))
+                        }
+                    },
+                    onDismissRequest = { showEndPickerDialog = false },
                 )
-                Button(
-                    modifier = Modifier.align(Alignment.End),
-                    onClick = { showEndDatePickerDialog = false },
-                ) {
-                    Text(stringResource(R.string.report_ok))
-                }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -137,8 +159,8 @@ fun ReportDatePickerDialogContent(
 
                 TextButton(
                     onClick = {
-                        if (startDate != null && endDate != null) {
-                            onConfirm(startDate.div(1000), endDate.div(1000))
+                        if (startDateMills != 0L && endDateMills != 0L) {
+                            onConfirm(startDateMills.div(1000), endDateMills.div(1000))
                         } else {
                             val toast = Toast(context)
                             toast.setText(R.string.report_select_dates)
@@ -161,10 +183,7 @@ fun ReportDatePickerDialogContent(
 fun ReportDatePickerDialogContentPreview() {
     FoodDiaryTheme {
         Surface {
-            ReportDatePickerDialogContent(
-                onConfirm = {_, _ -> },
-                onDismiss = { }
-            )
+            ReportDatePickerDialogContent()
         }
     }
 }
