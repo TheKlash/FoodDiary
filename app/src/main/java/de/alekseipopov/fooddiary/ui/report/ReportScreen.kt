@@ -36,7 +36,7 @@ import de.alekseipopov.fooddiary.data.model.Day
 import de.alekseipopov.fooddiary.ui.base.UiState
 import de.alekseipopov.fooddiary.ui.details.DayDetailsItem
 import de.alekseipopov.fooddiary.ui.theme.FoodDiaryTheme
-import de.alekseipopov.fooddiary.util.testRecordList
+import de.alekseipopov.fooddiary.util.testDaysList
 
 @Composable
 fun ReportScreen(
@@ -47,40 +47,54 @@ fun ReportScreen(
 
     when (val uiState = uiState) {
         is UiState.Error -> { }
-        is UiState.Loading -> {
-            Box (
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
-            }
-        }
+        is UiState.Loading -> { StateLoading() }
         is UiState.Result -> {
-            val title = stringResource(
-                R.string.report_title,
-                uiState.data.startDateString,
-                uiState.data.endDateString
-            )
-
-            Scaffold(
-                modifier = Modifier.fillMaxSize(),
-                topBar = { TopBar(onNavigateIconPressed = navigateBack, title = title) },
-                content = { paddingValues ->
-                    Box(modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            top = paddingValues.calculateTopPadding(),
-                            bottom = 8.dp,
-                            start = 8.dp,
-                            end = 8.dp
-                        )
-                    ) {
-                        ReportScreenContent(days = uiState.data.records)
-                    }
-                }
+            StateResult(
+                startDate = uiState.data.startDateString,
+                endDate = uiState.data.endDateString,
+                navigateBack = navigateBack,
+                days = uiState.data.days
             )
         }
     }
+}
+
+@Composable
+private fun StateLoading() {
+    Box (
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator()
+    }
+}
+
+@Composable
+private fun StateResult(
+    startDate: String,
+    endDate: String,
+    navigateBack: () -> Unit = { },
+    days: List<Day>
+) {
+    val title = stringResource(R.string.report_title, startDate, endDate)
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        topBar = { TopBar(onNavigateIconPressed = navigateBack, title = title) },
+        content = { paddingValues ->
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    top = paddingValues.calculateTopPadding(),
+                    bottom = 8.dp,
+                    start = 8.dp,
+                    end = 8.dp
+                )
+            ) {
+                ReportScreenContent(days)
+            }
+        }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -139,14 +153,24 @@ private fun TopBarPreview() {
 
 @Composable
 @Preview
-private fun ReportScreenContentPreview() {
+private fun StateLoadingPreview() {
     FoodDiaryTheme {
         Surface {
-            Box(modifier = Modifier.fillMaxSize()) {
-                ReportScreenContent(
-                    days = testRecordList
-                )
-            }
+            StateLoading()
+        }
+    }
+}
+
+@Composable
+@Preview
+private fun StateResultPreview() {
+    FoodDiaryTheme {
+        Surface {
+            StateResult(
+                startDate = "01.01",
+                endDate = "31.12",
+                days = testDaysList
+            )
         }
     }
 }

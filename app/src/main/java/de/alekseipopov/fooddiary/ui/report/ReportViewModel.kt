@@ -6,15 +6,11 @@ import androidx.lifecycle.viewModelScope
 import de.alekseipopov.fooddiary.data.DayRecordRepository
 import de.alekseipopov.fooddiary.ui.base.UiState
 import de.alekseipopov.fooddiary.ui.report.model.Report
-import de.alekseipopov.fooddiary.ui.report.model.ReportUiModel
 import de.alekseipopov.fooddiary.util.unixTimeToDateDdMm
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.retry
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ReportViewModel(
@@ -41,7 +37,7 @@ class ReportViewModel(
                     val report = Report(
                         startDateString = startDate.unixTimeToDateDdMm(),
                         endDateString = endDate.unixTimeToDateDdMm(),
-                        records = it
+                        days = it
                     )
                     _uiState.value = UiState.Result(report)
                 }

@@ -35,7 +35,7 @@ import de.alekseipopov.fooddiary.data.model.Day
 import de.alekseipopov.fooddiary.ui.base.UiState
 import de.alekseipopov.fooddiary.ui.details.model.DetailsUiEvents
 import de.alekseipopov.fooddiary.ui.theme.FoodDiaryTheme
-import de.alekseipopov.fooddiary.util.testRecord
+import de.alekseipopov.fooddiary.util.testDay
 
 @Composable
 fun DetailsScreen(
@@ -46,48 +46,16 @@ fun DetailsScreen(
     val uiEvents by viewModel.uiEvents.collectAsState()
 
     when (val uiState = uiState) {
-        is UiState.Error -> {
-
-        }
-        is UiState.Loading -> {
-            Box (
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
-            }
-        }
+        is UiState.Error -> { }
+        is UiState.Loading -> { StateLoading() }
         is UiState.Result -> {
             val day = uiState.data
-            Scaffold(
-                topBar = {
-                    TopBar (
-                        onBackPressed = navigateBack,
-                        title = day.fullTime,
-                        onEditClick = { viewModel.showEditEntryDialog() },
-                        onDeleteClick = { viewModel.showDeleteDialog() }
-                    ) },
-                content = { paddingValues ->
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(
-                                top = paddingValues.calculateTopPadding(),
-                                bottom = 8.dp,
-                                start = 8.dp,
-                                end = 8.dp
-                            )
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .wrapContentHeight()
-                                .nestedScroll(rememberNestedScrollInteropConnection())
-                        ) {
-                            DayDetailsItem(day)
-                        }
-                    }
-                }
+
+            StateResult(
+                navigateBack = navigateBack,
+                onTopBarEditClick = { viewModel.showEditEntryDialog() },
+                onTopBarDeleteClick = { viewModel.showDeleteDialog() },
+                day = day
             )
 
             ObserveUiEvents(uiEvents, viewModel, day, navigateBack)
@@ -172,7 +140,52 @@ private fun TopBar(
 }
 
 @Composable
-private fun DetailsScreenContent(dsyRecord: Day) {
+private fun StateResult(
+    navigateBack: () -> Unit = {},
+    onTopBarEditClick: () -> Unit = {},
+    onTopBarDeleteClick: () -> Unit = {},
+    day: Day
+) {
+    Scaffold(
+        topBar = {
+            TopBar (
+                onBackPressed = navigateBack,
+                title = day.fullTime,
+                onEditClick = onTopBarEditClick,
+                onDeleteClick = onTopBarDeleteClick
+            ) },
+        content = { paddingValues ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(
+                        top = paddingValues.calculateTopPadding(),
+                        bottom = 8.dp,
+                        start = 8.dp,
+                        end = 8.dp
+                    )
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .nestedScroll(rememberNestedScrollInteropConnection())
+                ) {
+                    DayDetailsItem(day)
+                }
+            }
+        }
+    )
+}
+
+@Composable
+private fun StateLoading() {
+    Box (
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator()
+    }
 }
 
 @Composable
@@ -214,10 +227,18 @@ private fun TopBarPreview() {
 
 @Composable
 @Preview
-private fun DetailsScreenContentPreview() {
+private fun StateLoadingPreview() {
     Surface {
-        DetailsScreenContent(
-            dsyRecord = testRecord
+        StateLoading()
+    }
+}
+
+@Composable
+@Preview
+private fun StateResultPreview() {
+    Surface {
+        StateResult (
+            day = testDay
         )
     }
 }

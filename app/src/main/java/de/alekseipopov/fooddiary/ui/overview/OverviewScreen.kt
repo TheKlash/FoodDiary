@@ -46,8 +46,8 @@ import de.alekseipopov.fooddiary.ui.base.UiState
 import de.alekseipopov.fooddiary.ui.details.EditDayDialogContent
 import de.alekseipopov.fooddiary.ui.overview.model.OverviewUiEvents
 import de.alekseipopov.fooddiary.ui.theme.FoodDiaryTheme
-import de.alekseipopov.fooddiary.util.testRecord
-import de.alekseipopov.fooddiary.util.testRecordList
+import de.alekseipopov.fooddiary.util.testDay
+import de.alekseipopov.fooddiary.util.testDaysList
 
 @ExperimentalMaterial3Api
 @Composable
@@ -297,7 +297,7 @@ private fun DayRecordListItemPreview() {
             modifier = Modifier
                 .fillMaxSize()
                 .wrapContentHeight(),
-            day = testRecord
+            day = testDay
         )
     }
 }
@@ -318,7 +318,7 @@ private fun OverviewScreenPreview_Loading() {
 private fun OverviewScreenPreview_Result() {
     FoodDiaryTheme {
         Surface {
-            StateResult(dayRecords = testRecordList)
+            StateResult(dayRecords = testDaysList)
         }
     }
 }

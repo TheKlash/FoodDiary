@@ -4,7 +4,7 @@ import de.alekseipopov.fooddiary.data.model.Course
 import de.alekseipopov.fooddiary.data.model.Day
 import de.alekseipopov.fooddiary.data.model.Meal
 
-val testRecordList = mutableListOf(
+val testDaysList = mutableListOf(
     Day(
         id = 0,
         time = 1704067200L,
@@ -120,7 +120,7 @@ val testRecordList = mutableListOf(
     )
 )
 
-val testRecord = Day(
+val testDay = Day(
     id = 1,
     time = 1704153600L,
     meals = listOf(

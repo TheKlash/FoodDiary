@@ -23,8 +23,7 @@ import de.alekseipopov.fooddiary.R
 import de.alekseipopov.fooddiary.data.model.Day
 import de.alekseipopov.fooddiary.data.model.Meal
 import de.alekseipopov.fooddiary.ui.theme.FoodDiaryTheme
-import de.alekseipopov.fooddiary.util.testRecord
-import de.alekseipopov.fooddiary.util.unixTimeToDateFull
+import de.alekseipopov.fooddiary.util.testDay
 import de.alekseipopov.fooddiary.util.unixTimeToDateHhMm
 
 @Composable
@@ -94,7 +93,7 @@ private fun MealListItem(
 private fun DayDetailsItemPreview() {
     FoodDiaryTheme {
         Surface {
-            DayDetailsItem(day = testRecord)
+            DayDetailsItem(day = testDay)
         }
     }
 }

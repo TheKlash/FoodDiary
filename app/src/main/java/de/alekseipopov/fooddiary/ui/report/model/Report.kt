@@ -5,5 +5,5 @@ import de.alekseipopov.fooddiary.data.model.Day
 data class Report(
     val startDateString: String,
     val endDateString: String,
-    val records: List<Day> = listOf()
+    val days: List<Day> = listOf()
 )
