@@ -30,7 +30,7 @@ fun Navigation(navController: NavHostController) {
             route = Screen.Details.route, arguments = Screen.Details.navArguments
         ) {
             DetailsScreen(
-                onBackPressed = { navController.popUpTo("overview") },
+                onBackPressed = { navController.popUpTo(Screen.Overview.route) },
                 recordId = it.arguments?.getInt(Screen.Details.recordId) ?: -1
             )
         }
@@ -50,6 +50,5 @@ fun NavController.popUpTo(destination: String) = navigate(destination) {
     popUpTo(graph.findStartDestination().id) {
         saveState = true
     }
-    // Restore state when reselecting a previously selected item
     restoreState = true
 }
