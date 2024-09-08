@@ -8,6 +8,7 @@
     
     <!-- Details Screen -->
     <string name="details_title">Day review</string>
+    <string name="details_add_meal">Add meal</string>
 
     <!-- Day Details Item -->
     <string name="details_item_meal_counter">%1$d meals</string>
