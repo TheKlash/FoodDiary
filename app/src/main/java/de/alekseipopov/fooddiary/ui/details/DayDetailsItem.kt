@@ -20,11 +20,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import de.alekseipopov.fooddiary.R
+import de.alekseipopov.fooddiary.core.data.testDay
+import de.alekseipopov.fooddiary.core.format.unixTimeToDateHhMm
+import de.alekseipopov.fooddiary.core.ui.style.FoodDiaryTheme
 import de.alekseipopov.fooddiary.data.model.Day
 import de.alekseipopov.fooddiary.data.model.Meal
-import de.alekseipopov.fooddiary.core.ui.style.FoodDiaryTheme
-import de.alekseipopov.fooddiary.core.data.testRecord
-import de.alekseipopov.fooddiary.core.format.unixTimeToDateHhMm
 
 @Composable
 fun DayDetailsItem(
@@ -32,11 +32,7 @@ fun DayDetailsItem(
 ) {
     Column {
         Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            stringResource(
-                R.string.details_item_meal_counter, day?.meals?.size ?: 0
-            )
-        )
+        Text(stringResource(R.string.details_item_meal_counter, day?.meals?.size ?: 0))
         day?.meals?.forEach {
             Spacer(modifier = Modifier.height(8.dp))
             MealListItem(meal = it)
@@ -46,7 +42,7 @@ fun DayDetailsItem(
 }
 
 @Composable
-fun MealListItem(
+private fun MealListItem(
     meal: Meal
 ) {
     Card(
@@ -94,10 +90,10 @@ fun MealListItem(
 
 @Preview
 @Composable
-fun DayDetailsItemPreview() {
+private fun DayDetailsItemPreview() {
     FoodDiaryTheme {
         Surface {
-            DayDetailsItem(day = testRecord)
+            DayDetailsItem(day = testDay)
         }
     }
 }

@@ -1,9 +1,9 @@
 package de.alekseipopov.fooddiary.data
 
-import android.provider.SyncStateContract.Helpers.insert
 import de.alekseipopov.fooddiary.data.db.Database
 import de.alekseipopov.fooddiary.data.model.Day
 import de.alekseipopov.fooddiary.data.model.entity.DayRecordEntity
+import de.alekseipopov.fooddiary.data.model.entity.DayRecordWithMealsAndCourses
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -17,27 +17,21 @@ class DayRecordRepositoryImpl(
     override suspend fun getDayRecords(): Flow<List<Day>> =
         database.dayRecordDao()
             .getAll()
-            .map {
-                it.toDayList()
-            }
+            .map(List<DayRecordWithMealsAndCourses>::toDayList)
             .distinctUntilChanged()
             .flowOn(Dispatchers.IO)
 
     override suspend fun getDay(id: Int): Flow<Day> =
         database.dayRecordDao()
             .getDayRecordWithMeals(id)
-            .map {
-                it.toDay()
-            }
+            .map(DayRecordWithMealsAndCourses::toDay)
             .distinctUntilChanged()
             .flowOn(Dispatchers.IO)
 
     override suspend fun getReport(startDate: Long, endDate: Long): Flow<List<Day>> =
         database.dayRecordDao()
             .getDayRecordWithMeals(startDate, endDate)
-            .map {
-                it.toDayList()
-            }
+            .map(List<DayRecordWithMealsAndCourses>::toDayList)
             .distinctUntilChanged()
             .flowOn(Dispatchers.IO)
 

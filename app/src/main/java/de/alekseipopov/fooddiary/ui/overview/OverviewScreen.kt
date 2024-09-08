@@ -41,14 +41,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import de.alekseipopov.fooddiary.R
+import de.alekseipopov.fooddiary.core.data.testDay
+import de.alekseipopov.fooddiary.core.data.testDaysList
 import de.alekseipopov.fooddiary.data.model.Day
 import de.alekseipopov.fooddiary.core.ui.data.UiState
 import de.alekseipopov.fooddiary.ui.details.EditDayDialogContent
 import de.alekseipopov.fooddiary.ui.overview.model.OverviewUiEvents
 import de.alekseipopov.fooddiary.core.ui.style.FoodDiaryTheme
-import de.alekseipopov.fooddiary.core.data.testRecord
-import de.alekseipopov.fooddiary.core.data.testRecordList
-import org.koin.androidx.compose.koinViewModel
 
 @ExperimentalMaterial3Api
 @Composable
@@ -93,11 +92,11 @@ fun OverviewScreen(viewModel: OverviewViewModel) {
         }
     )
 
-    OverviewObserveUiEvents(uiEvents, viewModel)
+    ObserveUiEvents(uiEvents, viewModel)
 }
 
 @Composable
-private fun OverviewObserveUiEvents(
+private fun ObserveUiEvents(
     events: OverviewUiEvents?,
     viewModel: OverviewViewModel
 ) {
@@ -121,9 +120,7 @@ private fun OverviewObserveUiEvents(
             ) {
                 Surface {
                     EditDayDialogContent(
-                        onConfirm = {
-                            viewModel.createNewDay(it)
-                        },
+                        onConfirm = { viewModel.createNewDay(it) },
                         onDismiss = { viewModel.hideNewEntryDialog() }
                     )
                 }
@@ -293,7 +290,7 @@ private fun DayRecordListItemPreview() {
             modifier = Modifier
                 .fillMaxSize()
                 .wrapContentHeight(),
-            day = testRecord
+            day = testDay
         )
     }
 }
@@ -314,7 +311,7 @@ private fun OverviewScreenPreview_Loading() {
 private fun OverviewScreenPreview_Result() {
     FoodDiaryTheme {
         Surface {
-            StateResult(dayRecords = testRecordList)
+            StateResult(dayRecords = testDaysList)
         }
     }
 }
