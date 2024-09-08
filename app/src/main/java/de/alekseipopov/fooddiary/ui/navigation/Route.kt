@@ -1,32 +1,23 @@
 package de.alekseipopov.fooddiary.ui.navigation
 
-import androidx.navigation.NavHostController
-import androidx.navigation.NavOptions
+import de.alekseipopov.fooddiary.core.data.toEncodedJson
+import de.alekseipopov.fooddiary.core.data.toJson
+import de.alekseipopov.fooddiary.core.navigation.RouteWithArgs
+import de.alekseipopov.fooddiary.core.navigation.RouteWithNoArgs
 
-interface Route {
-    val path: String
-}
+internal object OverviewScreenRoute : RouteWithNoArgs("overview_screen")
 
-abstract class RouteWithNoArgs(override val path: String): Route {
-
-    fun navigate(
-        navHostController: NavHostController,
-        navOptions: NavOptions? = null
-    ) {
-        navHostController.navigate("$path?", navOptions)
+internal object DetailsScreenRoute : RouteWithArgs<DetailsScreenRoute.Args>("details_screen") {
+    data class Args(val id: Int? = null) {
+        override fun toString() = toEncodedJson()
     }
 }
 
-abstract class RouteWithArgs<T>(val pathName: String): Route {
-
-    override val path = "$pathName?argument"
-    val argumentName: String = "argument"
-
-    fun navigate(
-        navHostController: NavHostController,
-        argument: T,
-        navOptions: NavOptions? = null
+internal object ReportScreenRoute : RouteWithArgs<ReportScreenRoute.Args>("report_screen") {
+    data class Args(
+        val startDate: Long? = null,
+        val endDate: Long? = null
     ) {
-        navHostController.navigate("$pathName?$argumentName=$argument", navOptions)
+        override fun toString() = toEncodedJson()
     }
 }

@@ -1,4 +1,4 @@
-package de.alekseipopov.fooddiary.util
+package de.alekseipopov.fooddiary.core.data
 
 import de.alekseipopov.fooddiary.data.model.Course
 import de.alekseipopov.fooddiary.data.model.Day

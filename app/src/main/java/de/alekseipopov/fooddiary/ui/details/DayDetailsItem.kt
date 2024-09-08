@@ -22,10 +22,9 @@ import androidx.compose.ui.unit.sp
 import de.alekseipopov.fooddiary.R
 import de.alekseipopov.fooddiary.data.model.Day
 import de.alekseipopov.fooddiary.data.model.Meal
-import de.alekseipopov.fooddiary.ui.theme.FoodDiaryTheme
-import de.alekseipopov.fooddiary.util.testRecord
-import de.alekseipopov.fooddiary.util.unixTimeToDateFull
-import de.alekseipopov.fooddiary.util.unixTimeToDateHhMm
+import de.alekseipopov.fooddiary.core.ui.style.FoodDiaryTheme
+import de.alekseipopov.fooddiary.core.data.testRecord
+import de.alekseipopov.fooddiary.core.format.unixTimeToDateHhMm
 
 @Composable
 fun DayDetailsItem(

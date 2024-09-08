@@ -33,25 +33,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import de.alekseipopov.fooddiary.data.model.Day
 import de.alekseipopov.fooddiary.ui.details.model.DetailsUiEvents
-import de.alekseipopov.fooddiary.util.testRecord
+import de.alekseipopov.fooddiary.core.data.testRecord
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailsScreen(
-    onBackPressed: () -> Unit, recordId: Int
+    viewModel: DetailsViewModel
 ) {
-    val viewModel: DetailsViewModel = koinViewModel()
     val uiState by viewModel.uiState.collectAsState()
     val uiEvents by viewModel.uiEvents.collectAsState(null)
-    viewModel.getDay(recordId)
 
     Scaffold(topBar = {
         TopAppBar(colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
             titleContentColor = MaterialTheme.colorScheme.primary,
         ), navigationIcon = {
-            IconButton(onClick = { onBackPressed() }) {
+            IconButton(onClick = { viewModel.back() }) {
                 Image(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
@@ -121,10 +119,6 @@ fun DetailsScreen(
                         onDismiss = { viewModel.hideDeleteDialog() })
                 }
             }
-        }
-
-        is DetailsUiEvents.NavigateBack -> {
-            onBackPressed()
         }
 
         else -> {}

@@ -1,4 +1,4 @@
-package de.alekseipopov.fooddiary.ui.base
+package de.alekseipopov.fooddiary.core.ui.data
 
 sealed class UiState<out T> {
     class Loading<Nothing>: UiState<Nothing>()

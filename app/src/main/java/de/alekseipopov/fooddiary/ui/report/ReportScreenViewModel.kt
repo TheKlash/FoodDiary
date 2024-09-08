@@ -4,9 +4,11 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import de.alekseipopov.fooddiary.data.DayRecordRepository
+import de.alekseipopov.fooddiary.ui.navigation.MainCoordinator
 import de.alekseipopov.fooddiary.ui.report.model.Report
 import de.alekseipopov.fooddiary.ui.report.model.ReportUiModel
-import de.alekseipopov.fooddiary.util.unixTimeToDateDdMm
+import de.alekseipopov.fooddiary.core.format.unixTimeToDateDdMm
+import de.alekseipopov.fooddiary.ui.navigation.NavEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,6 +18,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ReportScreenViewModel(
+    private val coordinator: MainCoordinator,
+    private val startDate: Long,
+    private val endDate: Long,
     private val repository: DayRecordRepository
 ): ViewModel() {
 
@@ -23,8 +28,8 @@ class ReportScreenViewModel(
         get() = _reportRecords
     private val _reportRecords = MutableStateFlow(ReportUiModel())
 
-    fun getReport(startDate: Long, endDate: Long) {
-         _reportRecords.update { state -> state.copy(isLoading = true) }
+    init {
+        _reportRecords.update { state -> state.copy(isLoading = true) }
         viewModelScope.launch(Dispatchers.IO) {
             repository.getReport(startDate, endDate)
                 .catch { e ->
@@ -43,4 +48,9 @@ class ReportScreenViewModel(
         }
     }
 
+    fun back() {
+        viewModelScope.launch(Dispatchers.Main) {
+            coordinator.navigate(NavEvent.Back())
+        }
+    }
 }

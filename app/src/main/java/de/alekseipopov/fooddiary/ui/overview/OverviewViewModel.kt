@@ -2,11 +2,15 @@ package de.alekseipopov.fooddiary.ui.overview
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import de.alekseipopov.fooddiary.ui.base.UiState
-import de.alekseipopov.fooddiary.ui.base.toUiState
+import de.alekseipopov.fooddiary.core.ui.data.UiState
+import de.alekseipopov.fooddiary.core.ui.data.toUiState
 import de.alekseipopov.fooddiary.ui.overview.model.OverviewUiEvents
 import de.alekseipopov.fooddiary.data.DayRecordRepository
 import de.alekseipopov.fooddiary.data.model.Day
+import de.alekseipopov.fooddiary.ui.navigation.DetailsScreenRoute
+import de.alekseipopov.fooddiary.ui.navigation.MainCoordinator
+import de.alekseipopov.fooddiary.ui.navigation.NavEvent
+import de.alekseipopov.fooddiary.ui.navigation.ReportScreenRoute
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,6 +21,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class OverviewViewModel(
+    private val coordinator: MainCoordinator,
     private val repository: DayRecordRepository
 ) : ViewModel() {
 
@@ -45,6 +50,37 @@ class OverviewViewModel(
         viewModelScope.launch(Dispatchers.Main) {
             val newDayId = repository.createNewDay(date / 1000)
             _uiEvents.value = OverviewUiEvents.ShowNewDay(newDayId)
+            coordinator.navigate(
+                NavEvent.ComposeScreen(
+                    route = DetailsScreenRoute,
+                    args = DetailsScreenRoute.Args(newDayId)
+                )
+            )
+        }
+    }
+
+    fun onDayRecordSelected(id: Int) {
+        viewModelScope.launch {
+            coordinator.navigate(
+                NavEvent.ComposeScreen(
+                    route = DetailsScreenRoute,
+                    args = DetailsScreenRoute.Args(id)
+                )
+            )
+        }
+    }
+
+    fun onReportSelected(startDate: Long, endDate: Long) {
+        viewModelScope.launch {
+            coordinator.navigate(
+                NavEvent.ComposeScreen(
+                    route = ReportScreenRoute,
+                    args = ReportScreenRoute.Args(
+                        startDate = startDate,
+                        endDate = endDate
+                    )
+                )
+            )
         }
     }
 

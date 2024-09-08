@@ -1,38 +1,39 @@
 package de.alekseipopov.fooddiary.ui.navigation
 
-import androidx.navigation.NamedNavArgument
-import androidx.navigation.NavType
-import androidx.navigation.navArgument
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.navigation.NavGraphBuilder
+import de.alekseipopov.fooddiary.core.navigation.composable
+import de.alekseipopov.fooddiary.ui.details.DetailsScreen
+import de.alekseipopov.fooddiary.ui.details.DetailsViewModel
+import de.alekseipopov.fooddiary.ui.overview.OverviewScreen
+import de.alekseipopov.fooddiary.ui.overview.OverviewViewModel
+import de.alekseipopov.fooddiary.ui.report.ReportScreen
+import de.alekseipopov.fooddiary.ui.report.ReportScreenViewModel
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
-sealed class Screen(
-    val route: String,
-    val navArguments: List<NamedNavArgument> = emptyList()
-) {
-    data object Overview : Screen(
-        route = "overview"
-    ) {
-        fun createRoute() = "overview"
+@OptIn(ExperimentalMaterial3Api::class)
+internal fun NavGraphBuilder.overviewScreen() {
+    composable(route = OverviewScreenRoute) {
+        val viewModel = koinViewModel<OverviewViewModel>()
+        OverviewScreen(viewModel = viewModel)
     }
+}
 
-    data object Details : Screen(
-        route = "details/{recordId}",
-        navArguments = listOf(
-            navArgument("recordId") { type = NavType.IntType }
-        )
-    ) {
-        const val recordId = "recordId"
-        fun createRoute(recordId: Int) = "details/${recordId}"
+internal fun NavGraphBuilder.detailsScreen() {
+    composable(route = DetailsScreenRoute) { _, args ->
+        val viewModel = koinViewModel<DetailsViewModel> {
+            parametersOf(args.id)
+        }
+        DetailsScreen(viewModel = viewModel)
     }
+}
 
-    data object Report : Screen(
-        route = "report/{startDate}&{endDate}",
-        navArguments = listOf(
-            navArgument("startDate") { type = NavType.LongType },
-            navArgument("endDate") { type = NavType.LongType }
-        )
-    ) {
-        const val startDate = "startDate"
-        const val endDate  = "endDate"
-        fun createRoute(startDate: Long, endDate: Long) = "report/${startDate}&${endDate}"
+internal fun NavGraphBuilder.reportScreen() {
+    composable(route = ReportScreenRoute) { _, args ->
+        val viewModel = koinViewModel<ReportScreenViewModel> {
+            parametersOf(args.startDate, args.endDate)
+        }
+        ReportScreen(viewModel = viewModel)
     }
 }

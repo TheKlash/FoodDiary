@@ -32,26 +32,21 @@ import androidx.compose.ui.unit.sp
 import de.alekseipopov.fooddiary.R
 import de.alekseipopov.fooddiary.data.model.Day
 import de.alekseipopov.fooddiary.ui.details.DayDetailsItem
-import de.alekseipopov.fooddiary.ui.theme.FoodDiaryTheme
-import de.alekseipopov.fooddiary.util.testRecordList
+import de.alekseipopov.fooddiary.core.ui.style.FoodDiaryTheme
+import de.alekseipopov.fooddiary.core.data.testRecordList
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ReportScreen(
-    onBackPressed: () -> Unit,
-    startDate: Long,
-    endDate: Long
+    viewModel: ReportScreenViewModel
 ) {
-    val viewModel: ReportScreenViewModel = koinViewModel()
     val uiState = viewModel.reportRecords.collectAsState().value
     val title = stringResource(
         R.string.report_title,
         uiState.report?.startDateString ?: "",
         uiState.report?.endDateString ?: ""
     )
-
-    viewModel.getReport(startDate, endDate)
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -62,7 +57,7 @@ fun ReportScreen(
                     titleContentColor = MaterialTheme.colorScheme.primary,
                 ),
                 navigationIcon = {
-                    IconButton(onClick = { onBackPressed() }) {
+                    IconButton(onClick = { viewModel.back() }) {
                         Image(
 
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,

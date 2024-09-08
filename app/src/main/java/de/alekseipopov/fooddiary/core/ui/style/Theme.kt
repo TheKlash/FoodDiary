@@ -1,4 +1,4 @@
-package de.alekseipopov.fooddiary.ui.theme
+package de.alekseipopov.fooddiary.core.ui.style
 
 import android.app.Activity
 import android.os.Build

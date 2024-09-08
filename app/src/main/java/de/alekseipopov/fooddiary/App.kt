@@ -2,10 +2,7 @@ package de.alekseipopov.fooddiary
 
 import android.app.Application
 import de.alekseipopov.fooddiary.data.di.dataModule
-import de.alekseipopov.fooddiary.ui.details.di.detailsModule
 import de.alekseipopov.fooddiary.ui.di.uiModule
-import de.alekseipopov.fooddiary.ui.overview.di.overviewModule
-import de.alekseipopov.fooddiary.ui.report.di.reportModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 

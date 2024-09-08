@@ -28,7 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import de.alekseipopov.fooddiary.R
-import de.alekseipopov.fooddiary.util.unixTimeToDateFull
+import de.alekseipopov.fooddiary.core.format.unixTimeToDateFull
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

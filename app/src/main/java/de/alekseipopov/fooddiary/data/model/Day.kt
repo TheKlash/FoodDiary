@@ -1,7 +1,7 @@
 package de.alekseipopov.fooddiary.data.model
 
 import de.alekseipopov.fooddiary.data.model.entity.DayRecordEntity
-import de.alekseipopov.fooddiary.util.unixTimeToDateFull
+import de.alekseipopov.fooddiary.core.format.unixTimeToDateFull
 
 data class Day(
     val id: Int,

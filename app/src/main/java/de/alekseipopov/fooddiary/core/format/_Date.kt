@@ -1,4 +1,4 @@
-package de.alekseipopov.fooddiary.util
+package de.alekseipopov.fooddiary.core.format
 
 import java.text.SimpleDateFormat
 import java.util.Date

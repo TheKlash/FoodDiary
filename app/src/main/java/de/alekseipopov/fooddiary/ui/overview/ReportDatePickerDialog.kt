@@ -32,8 +32,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import de.alekseipopov.fooddiary.R
-import de.alekseipopov.fooddiary.ui.theme.FoodDiaryTheme
-import de.alekseipopov.fooddiary.util.unixTimeToDateFull
+import de.alekseipopov.fooddiary.core.ui.style.FoodDiaryTheme
+import de.alekseipopov.fooddiary.core.format.unixTimeToDateFull
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

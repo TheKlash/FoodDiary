@@ -32,7 +32,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -43,21 +42,17 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import de.alekseipopov.fooddiary.R
 import de.alekseipopov.fooddiary.data.model.Day
-import de.alekseipopov.fooddiary.ui.base.UiState
+import de.alekseipopov.fooddiary.core.ui.data.UiState
 import de.alekseipopov.fooddiary.ui.details.EditDayDialogContent
 import de.alekseipopov.fooddiary.ui.overview.model.OverviewUiEvents
-import de.alekseipopov.fooddiary.ui.theme.FoodDiaryTheme
-import de.alekseipopov.fooddiary.util.testRecord
-import de.alekseipopov.fooddiary.util.testRecordList
+import de.alekseipopov.fooddiary.core.ui.style.FoodDiaryTheme
+import de.alekseipopov.fooddiary.core.data.testRecord
+import de.alekseipopov.fooddiary.core.data.testRecordList
 import org.koin.androidx.compose.koinViewModel
 
 @ExperimentalMaterial3Api
 @Composable
-fun OverviewScreen(
-    navigateToDetails: (Int) -> Unit,
-    navigateToReport: (Long, Long) -> Unit
-) {
-    val viewModel: OverviewViewModel = koinViewModel()
+fun OverviewScreen(viewModel: OverviewViewModel) {
     val uiState by viewModel.uiState.collectAsState()
     val uiEvents by viewModel.uiEvents.collectAsState()
 
@@ -83,9 +78,7 @@ fun OverviewScreen(
                     is UiState.Result<*> -> {
                         StateResult(
                             dayRecords = (uiState as UiState.Result<List<Day>>).data,
-                            onDayRecordSelected = { id ->
-                                navigateToDetails(id)
-                            }
+                            onDayRecordSelected = { id -> viewModel.onDayRecordSelected(id) }
                         )
                     }
 
@@ -100,15 +93,13 @@ fun OverviewScreen(
         }
     )
 
-    OverviewObserveUiEvents(uiEvents, viewModel, navigateToDetails, navigateToReport)
+    OverviewObserveUiEvents(uiEvents, viewModel)
 }
 
 @Composable
 private fun OverviewObserveUiEvents(
     events: OverviewUiEvents?,
-    viewModel: OverviewViewModel,
-    navigateToDetails: (Int) -> Unit,
-    navigateToReport: (Long, Long) -> Unit
+    viewModel: OverviewViewModel
 ) {
     when (events) {
         is OverviewUiEvents.ShowReportDatePickerDialog -> {
@@ -116,7 +107,9 @@ private fun OverviewObserveUiEvents(
                 onDismissRequest = { viewModel.hideReportDatePickerDialog() }
             ) {
                 ReportDatePickerDialogContent(
-                    onConfirm = { startDate, endDate -> navigateToReport(startDate, endDate) },
+                    onConfirm = { startDate, endDate ->
+                        viewModel.onReportSelected(startDate, endDate)
+                    },
                     onDismiss = { viewModel.hideReportDatePickerDialog() }
                 )
             }
@@ -138,7 +131,6 @@ private fun OverviewObserveUiEvents(
         }
 
         is OverviewUiEvents.ShowNewDay -> {
-            navigateToDetails(events.id)
             viewModel.hideNewEntryDialog()
         }
 

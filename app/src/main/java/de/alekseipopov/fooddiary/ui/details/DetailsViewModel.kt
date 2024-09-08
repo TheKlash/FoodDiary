@@ -6,6 +6,9 @@ import androidx.lifecycle.viewModelScope
 import de.alekseipopov.fooddiary.data.DayRecordRepository
 import de.alekseipopov.fooddiary.ui.details.model.DetailsUiEvents
 import de.alekseipopov.fooddiary.ui.details.model.DetailsUiState
+import de.alekseipopov.fooddiary.ui.navigation.DetailsScreenRoute
+import de.alekseipopov.fooddiary.ui.navigation.MainCoordinator
+import de.alekseipopov.fooddiary.ui.navigation.NavEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,6 +20,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class DetailsViewModel(
+    private val coordinator: MainCoordinator,
+    private val id: Int,
     private val repository: DayRecordRepository
 ) : ViewModel() {
 
@@ -26,6 +31,10 @@ class DetailsViewModel(
 
     private val _uiEvents = Channel<DetailsUiEvents>()
     val uiEvents = _uiEvents.receiveAsFlow()
+
+    init {
+        getDay(id)
+    }
 
     fun getDay(id: Int) {
         _uiState.update { state -> state.copy(isLoading = true) }
@@ -67,7 +76,7 @@ class DetailsViewModel(
                     repository.deleteDay(it)
                 }
             }
-            _uiEvents.send(DetailsUiEvents.NavigateBack())
+            back()
         }
     }
 
@@ -92,6 +101,12 @@ class DetailsViewModel(
     fun hideDeleteDialog() {
         viewModelScope.launch(Dispatchers.Main) {
             _uiEvents.send(DetailsUiEvents.HideDeleteDialog())
+        }
+    }
+
+    fun back() {
+        viewModelScope.launch(Dispatchers.Main) {
+            coordinator.navigate(NavEvent.Back())
         }
     }
 

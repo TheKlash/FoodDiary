@@ -5,5 +5,4 @@ sealed class DetailsUiEvents {
     class HideEditDateDialog() : DetailsUiEvents()
     class ShowDeleteDialog(): DetailsUiEvents()
     class HideDeleteDialog(): DetailsUiEvents()
-    class NavigateBack(): DetailsUiEvents()
 }
