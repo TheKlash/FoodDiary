@@ -1,6 +1,5 @@
 package de.alekseipopov.fooddiary.ui.details
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,17 +16,19 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import de.alekseipopov.fooddiary.R
+import de.alekseipopov.fooddiary.core.format.dateMillisToFullMillis
+import de.alekseipopov.fooddiary.core.format.fullMillisToDateMillis
 import de.alekseipopov.fooddiary.core.format.unixTimeToDateFull
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,12 +39,12 @@ fun EditDayDialogContent(
     onDismiss: () -> Unit,
 ) {
     val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = currentDay ?: (System.currentTimeMillis())
+        initialSelectedDateMillis = (currentDay?.dateMillisToFullMillis()) ?: (System.currentTimeMillis())
     )
     var showDatePickerDialog by remember { mutableStateOf(false) }
-    var selectedTimeMillis by remember { mutableStateOf(currentDay) }
-
-    val context = LocalContext.current
+    var selectedTimeMillis by remember { mutableLongStateOf(
+        currentDay?.dateMillisToFullMillis() ?: (System.currentTimeMillis())
+    ) }
 
     Column(
         modifier = Modifier
@@ -68,17 +69,12 @@ fun EditDayDialogContent(
             modifier = Modifier.fillMaxWidth(),
             onClick = { showDatePickerDialog = !showDatePickerDialog }
         ) {
-            if (selectedTimeMillis == null) {
-                Text(
-                    textAlign = TextAlign.Center,
-                    text = stringResource(R.string.edit_day_select_date)
-                )
-            } else {
-                Text(
-                    textAlign = TextAlign.Center,
-                    text = selectedTimeMillis?.div(1000)?.unixTimeToDateFull() ?: ""
-                )
-            }
+            Text(
+                textAlign = TextAlign.Center,
+                text = selectedTimeMillis
+                    .fullMillisToDateMillis()
+                    .unixTimeToDateFull()
+            )
         }
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -94,13 +90,7 @@ fun EditDayDialogContent(
             }
             TextButton(
                 onClick = {
-                    if (selectedTimeMillis != null) {
-                        onConfirm(selectedTimeMillis!!)
-                    } else {
-                        val toast = Toast(context)
-                        toast.setText(R.string.edit_day_select_date)
-                        toast.show()
-                    }
+                    onConfirm(selectedTimeMillis.fullMillisToDateMillis())
                 }
             ) {
                 Text(
@@ -116,7 +106,7 @@ fun EditDayDialogContent(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        selectedTimeMillis = datePickerState.selectedDateMillis
+                        selectedTimeMillis = datePickerState.selectedDateMillis ?: 0L
                         showDatePickerDialog = false
                     }
                 ) {
@@ -158,7 +148,7 @@ fun EditDayDialogContentPreview_NoDate() {
 fun EditDayDialogContentPreview_WithDate() {
     Surface {
         EditDayDialogContent(
-            currentDay = 1708905600000,
+            currentDay = 1708905600,
             onConfirm = {},
             onDismiss = {}
         )

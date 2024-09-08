@@ -75,7 +75,7 @@ private fun ObserveUiEvents(
                     EditDayDialogContent(
                         currentDay = day.time,
                         onConfirm = {
-                            viewModel.updateDate(it / 1000)
+                            viewModel.updateDate(it)
                             viewModel.hideEditEntryDialog() },
                         onDismiss = { viewModel.hideEditEntryDialog() })
                 }

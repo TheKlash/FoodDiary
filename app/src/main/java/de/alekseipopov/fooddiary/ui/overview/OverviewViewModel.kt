@@ -48,7 +48,7 @@ class OverviewViewModel(
 
     fun createNewDay(date: Long) {
         viewModelScope.launch(Dispatchers.Main) {
-            val newDayId = repository.createNewDay(date / 1000)
+            val newDayId = repository.createNewDay(date)
             _uiEvents.value = OverviewUiEvents.ShowNewDay(newDayId)
             coordinator.navigate(
                 NavEvent.ComposeScreen(

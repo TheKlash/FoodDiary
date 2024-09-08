@@ -18,3 +18,7 @@ fun Long.unixTimeToDateFull(): String = formatterDateFull.format(Date(this * 100
 fun Long.unixTimeToDateHhMm(): String = formatterDateHhMm.format(Date(this * 1000))
 
 fun Long.unixTimeToDateDdMm(): String = formatterDateDdMm.format(Date(this * 1000))
+
+fun Long.dateMillisToFullMillis(): Long = this * 1000
+
+fun Long.fullMillisToDateMillis(): Long = this.div(1000)
